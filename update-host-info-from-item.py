@@ -9,13 +9,17 @@ import sys
 #pip install pyzabbix
 from pyzabbix import ZabbixAPI
 
-#hostname at which the Zabbix web interface is available
-ZABBIX_SERVER = 'http://localhost/zabbix'
+#import api credentials from different file
+sys.path.insert(0,'/var/lib/zabbix')
+import config
+
+# The hostname at which the Zabbix web interface is available
+ZABBIX_SERVER = config.url
 
 zapi = ZabbixAPI(ZABBIX_SERVER)
 
-#login to the Zabbix API
-zapi.login('Admin', 'zabbix')
+# Login to the Zabbix API
+zapi.login(config.username, config.password)
 
 #query host id by parsing hostname as argument 1
 hosts = zapi.host.get (
@@ -25,7 +29,7 @@ hosts = zapi.host.get (
 #extract hostid from json string. host['hostid'] is array element with string identifier
 for host in hosts:
 	hostid = host['hostid']
-
+print host
 #look for last value. key_ is the name of column. sysName is name of 'item key' in zabbix
 items = zapi.item.get(                               
                 hostids=hostid,
@@ -34,6 +38,7 @@ items = zapi.item.get(
 
 #assign item lastvalue to dev_name
 for item in items:
+	print item['lastvalue']
 	dev_name = item['lastvalue']
 
 #if nothing has assigned. if nothing kas placed in variable then python assigns 0 to it
