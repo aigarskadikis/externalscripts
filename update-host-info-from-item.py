@@ -34,7 +34,7 @@ print host
 items = zapi.item.get(                               
                 hostids=hostid,
                 output=['lastvalue'],
-                filter={'key_':'sysName'})
+                filter={'key_':'system.name'})
 
 #assign item lastvalue to dev_name
 for item in items:
@@ -49,7 +49,7 @@ if dev_name == '0':
 items = zapi.item.get(                               
                 hostids=hostid,
                 output=['lastvalue'],
-                filter={'key_':'sysDescr'})
+                filter={'key_':'system.descr'})
 
 #assign last value
 for item in items:
@@ -58,7 +58,7 @@ for item in items:
 items = zapi.item.get(                              
                 hostids=hostid,
                 output=['lastvalue'],
-                filter={'key_':'sysLocation'})
+                filter={'key_':'system.location'})
 
 #generate full description sentence
 for item in items:
