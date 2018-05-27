@@ -4,6 +4,11 @@
 #that is why we need to create array to put all page msh into
 declare -a array
 
+#define endpoint for url for example if the ir is
+#https://www.ss.com/lv/electronics/computers/multimedia/
+#then the endpoint is "multimedia"
+endpoint=$(echo "$1" | sed "s/\/$//;s/^.*\///g")
+
 nr=0 #start check from page 0
 httpcode=200 #reset the status code as OK
 
@@ -22,8 +27,8 @@ url=$(echo "$1" | sed "s/\/$//")/page$nr.html
 httpcode=$(curl -s -o /dev/null -w "%{http_code}" "$url")
 
 if [ "$httpcode" -eq "200" ]; then
-array[nr]=$(curl -s "$url" | egrep -o "[0-9a-z]+\.html" | grep -v "^page" | sed "s/\..*$//g" | sort | uniq)
-
+array[nr]=$(curl -s "$url" | sed "s/<\/tr>/<\/tr>\n\n/g" | grep "input.*nowrap" | sed "s/^.*$endpoint\//{\"{#MSG}\":\"/g" | sed "s/\.html.>.*c=1>/\",\"{#PRICE}\":\"/g" | sed "s/[[:space:]].*$/\"},/g" | egrep "\"[0-9\.]+\"")
+#echo "${array[nr]}"
 else
 nr=$((nr-1))
 fi
@@ -33,5 +38,5 @@ done
 #output all array elements
 #replace spaces with new line characters
 #convert output to JSON format for Zabbix LLD dicover prototype
-echo "${array[@]}" | sed "s/\s/\n/g" | sed "s/^/{\"{#MSG}\":\"/;s/$/\"},/" | tr -cd '[:print:]' | sed "s/^/{\"data\":[/;s/,$/]}/"
+echo "${array[@]}" | tr -cd '[:print:]' | sed "s/^/{\"data\":[/;s/,$/]}/"
 
