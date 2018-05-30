@@ -1,43 +1,44 @@
 #!/bin/bash
 
-
-
-
-#each page contains multiple msg files
-#that is why we need to create array to put all page msh into
+#maximum count blogger can contain per one sitemap view is 50 posts
+#that is why we need to create array to put all post ids inside 
 declare -a array
 
 nr=-49 #start check from page 0
-count=1 #reset the status code as OK
+count=1 #loop will continue while there is at least one post in sitemap
 
-#this while loop is only to count how many pages needs to analyse
+#loop starts because we definet so in previous step
 while [ "$count" -gt "0" ]
 do
 
-#increase page number
+#how many posts should check per one view
 nr=$((nr+50))
 
-#set full url link
-#remove the forwardslash in the end of argument if exists
+#set up full url link
 url="https://$1/feeds/posts/default/-/$(echo "$2"|sed "s/ /%20/g")/?atom.xml?redirect=false&start-index=$nr&max-results=50"
+
+#uncoment for debuging
 #echo "$url"
 
 #check if url exist
 httpcode=$(curl -s -o /dev/null -w "%{http_code}" "$url")
 
 if [ "$httpcode" -eq "200" ]; then
-array[nr]=$(curl -s "$url" | egrep -o "\/posts\/default\/[0-9]+" |sort|uniq| egrep -o "[0-9]+")
+array[nr]=$(curl -s "$url" | sed "s/<entry>/\n<entry>/g" |grep "^<entry>"| sed "s/<entry>.*blog-[0-9]\+\.post-/{\"{#POST}\":\"/g" | sed "s/<\/id>.*<title.type=.text.>/\",\"{#TITLE}\":\"/g" | sed "s/<\/title>.*$/\"},/g")
 
 #count how many posts is there
 count=$(echo "${array[nr]}"|grep -v "^$"|wc -l)
+
+#uncomment for debuging
 #echo "${array[nr]}"
 #echo $count
+#echo
+
 fi
 
 done
 
 #output all array elements
-#replace spaces with new line characters
 #convert output to JSON format for Zabbix LLD dicover prototype
-echo "${array[@]}" |sort|uniq|sed "s/^/{\"{#POST}\":\"/;s/$/\"},/" | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
+echo "${array[@]}" | sort | uniq | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
 
