@@ -24,22 +24,22 @@ url="https://$1/feeds/posts/default/-/$(echo "$2"|sed "s/ /%20/g")/?atom.xml?red
 #check if url exist
 httpcode=$(curl -s -o /dev/null -w "%{http_code}" "$url")
 
-if [ "$httpcode" -eq "200" ]; then
-array[nr]=$(curl -s "$url" | xmllint --xpath "//*[local-name()='feed']/*[local-name()='entry']/*[local-name()='content']" - | sed "s/<content/\n<content/g" | sed "s/\d034\|\d039/\n/g" | grep "^http.*://")
+#detect is there any entries in this sitemap
+count=$(curl -s "$url" | grep "entry" | wc -l)
 
-#count how many posts is there
-count=$(echo "${array[nr]}"|grep -v "^$"|wc -l)
+#if there is some entries
+if [ "$count" -gt "0" ]; then
 
-#uncomment for debuging
+#seach the links and put the links on single line
+array[nr]=$(curl -s "$url" | xmllint --xpath "//*[local-name()='feed']/*[local-name()='entry']/*[local-name()='content']" - | sed "s/<content/\n<content/g" | sed "s/\d034\|\d039/\n/g" | grep "^http.*://" | sed "s/\\\/\\\\\\\/g")
+
+#for debuging
 #echo "${array[nr]}"
-#echo $count
-#echo
 
 fi
 
 done
 
-#output all array elements
-#convert output to JSON format for Zabbix LLD dicover prototype
+#output all array elements. convert output to JSON format for Zabbix LLD dicover prototype
 echo "${array[@]}" | sort | uniq | sed "s/^/{\"{#LINK}\":\"/;s/$/\"},/" | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
 
