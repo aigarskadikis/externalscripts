@@ -5,6 +5,7 @@ declare -a array
 
 nr=-49 #start check from page 0
 count=1 #loop will continue while there is at least one post in sitemap
+i=0 #array counter. all entries which contains one link goes inside array
 
 #loop starts because we definet so in previous step
 while [ "$count" -gt "0" ]
@@ -16,14 +17,14 @@ nr=$((nr+50))
 #set up full url link
 url="https://$1/feeds/posts/default/-/$(echo "$2"|sed "s/ /%20/g")/?atom.xml?redirect=false&start-index=$nr&max-results=50"
 #uncoment for debuging
-echo "$url"
+#echo "$url"
 
 #check if url exist
 httpcode=$(curl -s -o /dev/null -w "%{http_code}" "$url")
 
 #detect is there any entries in this sitemap
 count=$(curl -s "$url" | sed "s/<entry>/\n<entry>/g" | grep "entry" | wc -l)
-echo "total count of entries $count"
+#echo "total count of entries $count"
 #if there is some entries
 if [ "$count" -gt "0" ]; then
 
@@ -36,7 +37,7 @@ active=1
 #loop starts
 while [ "$active" -le "$count" ]
 do
-echo "active entry: $active"
+#echo "active entry: $active"
 oneentry=$(echo "$allentries" |awk "/<entry>/{i++}i==$active{print; exit}" | sed "s/</\n</g" )
 postid=$(echo "$oneentry" | egrep -o "post\-[0-9]+" | egrep -o "[0-9]+" )
 
@@ -48,30 +49,39 @@ publicurl=$(echo "$oneentry" | grep "<link rel=\"alternate\"" | egrep -o "https.
 
 #echo "$oneentry" 
 
-echo "PostID=$postid"
-echo "Title=$title"
-echo "PublicURL=$publicurl"
-echo "Links on page:"
-echo "$oneentry" | sed "s/<content type=.html.>/<content>\n/g" | sed '1,/<content/d;/<\/content/,$d' | sed "s/\d034\|\d039/\n/g" | grep "^http.*://" | sed "s/\\\/\\\\\\\/g" | sed "s/\&amp;/\&/g"
+#echo "PostID=$postid"
+#echo "Title=$title"
+#echo "PublicURL=$publicurl"
+#echo "Links on page:"
 
-echo
+#check if this content have at least on link 
+linkcount=$(echo "$oneentry" | sed "s/<content type=.html.>/<content>\n/g" | sed '1,/<content/d;/<\/content/,$d' | \
+sed "s/\d034\|\d039/\n/g" | grep "^http.*://" | sed "s/\\\/\\\\\\\/g" | wc -l)
+
+if [ "$linkcount" -gt "0" ]; then
+
+i=$((i+1))
+#format part of JSON without {data:[]}
+array[i]=$(echo "$oneentry" | sed "s/<content type=.html.>/<content>\n/g" | sed '1,/<content/d;/<\/content/,$d' | \
+sed "s/\d034\|\d039/\n/g" | grep "^http.*://" | sed "s/\\\/\\\\\\\/g" | sed "s/\&amp;/\&/g" | \
+sed "s|^|{\"{#ID}\":\"$postid\",\"{#TITLE}\":\"$title\",\"{#URL}\":\"$publicurl\",\"{#LINK}\":\"|" | \
+sed "s/$/\"},/")
+
+#for debuging
+#echo "${array[i]}"
+
+#echo
+fi
 
 active=$((active+1))
 done
-
-
-
-#curl -s "$url" | xmllint --xpath "//*[local-name()='feed']/*[local-name()='entry']/*[local-name()='content']" - | sed "s/<content/\n\n<content/g" 
-
-#array[nr]=$(curl -s "$url" | xmllint --xpath "//*[local-name()='feed']/*[local-name()='entry']/*[local-name()='content']" - | sed "s/<content/\n<content/g" | sed "s/\d034\|\d039/\n/g" | grep "^http.*://" | sed "s/\\\/\\\\\\\/g")
-
-#for debuging
-#echo "${array[nr]}"
 
 fi
 
 done
 
+echo
+
 #output all array elements. convert output to JSON format for Zabbix LLD dicover prototype
-#echo "${array[@]}" | sort | uniq | sed "s/^/{\"{#LINK}\":\"/;s/$/\"},/" | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
+echo "${array[@]}" | sort | uniq | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
 
