@@ -80,8 +80,13 @@ fi
 
 done
 
-echo
 
-#output all array elements. convert output to JSON format for Zabbix LLD dicover prototype
+#check if the result is empty
+#echo "${array[@]}" | grep 
+result=$(echo "${array[@]}" | grep -v "^$" | wc -l)
+#echo $result
+if [ "$result" -gt "0" ]; then
 echo "${array[@]}" | sort | uniq | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
-
+else
+echo "{\"data\":[]}"
+fi
