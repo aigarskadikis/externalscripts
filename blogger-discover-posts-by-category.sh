@@ -40,5 +40,5 @@ done
 
 #output all array elements
 #convert output to JSON format for Zabbix LLD dicover prototype
-echo "${array[@]}" | sort | uniq | tr -cd "[:print:]" | sed "s/^/{\"data\":[/;s/,$/]}/"
+echo "${array[@]}" | sort | uniq | tr -cd "[:print:]" | sed "s/[ \t]*$//" | sed "s/^/{\"data\":[/;s/,$/]}/"
 
