@@ -64,7 +64,7 @@ i=$((i+1))
 #format part of JSON without {data:[]}
 array[i]=$(echo "$oneentry" | sed "s/<content type=.html.>/<content>\n/g" | sed '1,/<content/d;/<\/content/,$d' | \
 sed "s|href=.\/|https:\/\/$1\/|g" | sed "s/http/\nhttp/g;s/ftp:/\nftp:/g;s/\&lt;/\n/g" | \
-grep -E -o "^[fht]+p(s)?:\/\/([a-zA-Z0-9\.\/_:?=&\*()+-]+(%20|%25|%22)?){1,}" | \
+grep -E -o "^[fht]+p(s)?:\/\/([a-zA-Z0-9./_:?=&*()+-]+(%20|%25|%22)?){1,}" | \
 sort | uniq | sed "s/\\\/\\\\\\\/g" | sed "s/\&amp;/\&/g" | \
 sed "s|^|{\"{#ID}\":\"$postid\",\"{#TITLE}\":\"$title\",\"{#URL}\":\"$publicurl\",\"{#LINK}\":\"|" | \
 sed "s/$/\"},/")
