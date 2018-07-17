@@ -33,4 +33,5 @@ for id in proxyid:
 				selectHosts = 'extend'
 				)
 	for h in hosts:
-		print h
+		print h['hosts']
+
