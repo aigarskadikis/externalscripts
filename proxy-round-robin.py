@@ -25,4 +25,4 @@ proxyid = zapi.proxy.get(
 			)
 
 for id in proxyid:
-	print id['proxyid']
+	print sys.argv[1]+'='+id['proxyid']
