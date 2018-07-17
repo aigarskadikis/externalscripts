@@ -26,3 +26,10 @@ proxyid = zapi.proxy.get(
 
 for id in proxyid:
 	print sys.argv[1]+'='+id['proxyid']
+
+	#get all hosts which belongs to proxy
+	hosts = zapi.proxy.get(
+				proxyids = id['proxyid']
+				)
+	for h in hosts:
+		print h
