@@ -29,7 +29,8 @@ for id in proxyid:
 
 	#get all hosts which belongs to proxy
 	hosts = zapi.proxy.get(
-				proxyids = id['proxyid']
+				proxyids = id['proxyid'],
+				selectHosts = 'extend'
 				)
 	for h in hosts:
 		print h
