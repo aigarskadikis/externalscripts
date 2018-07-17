@@ -34,5 +34,5 @@ for id in proxyid:
 				)
 	for proxy in proxies:
 		for host in proxy['hosts']:
-			print host['name']
+			print host['hostid']
 
