@@ -18,11 +18,6 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
-
-
-
-
-
-# Get a list of all issues (AKA tripped triggers)
-result = zapi.proxy.get(proxyids=10325)
+# get proxy info by name
+result = zapi.proxy.get(filter={'host':'Broceni'})
 print result
