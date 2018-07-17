@@ -19,5 +19,5 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 zapi.login(config.username, config.password)
 
 # get proxy info by name
-result = zapi.proxy.get(filter={'host':'Broceni'})
+result = zapi.proxy.get(filter={'host':sys.argv[1]})
 print result
