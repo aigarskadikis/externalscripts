@@ -3,7 +3,7 @@
 Shows a list of all current issues (AKA tripped triggers)
 """
 
-from pyzabbix import ZabbixAPI
+from pyzabbix import ZabbixAPI,ZabbixAPIException
 
 #import credentials from external file
 import sys
@@ -52,7 +52,20 @@ for id in source_proxy:
 	for proxy in proxies:
 		for idx,host in enumerate(proxy['hosts']):
 			destination = idx % destination_proxy_count + 1
-			print 'host with id:' + str(host['hostid']) + ' will be delivered to destination proxy ' + str(destination)
+			
+			# get the actual host id
+			deliver_to = zapi.proxy.get(output = ['proxyid'],filter={'host':sys.argv[destination+1]})
+			for dest in deliver_to:
+				print 'host with id:' + str(host['hostid']) + ' will be delivered to destination proxy ' + str(destination) + ' with id:' + str(dest['proxyid'])
+				
+				# change the proxy id for the host
+				try:
+					zapi.host.update(
+							hostid = host['hostid'],
+							proxy_hostid = dest['proxyid']
+							)
+				except ZabbixAPIException as e:
+					print(e)
 
 host_count_per_proxy = len(proxy['hosts'])
 print 'houst count per proxy ' + sys.argv[1] + ' = ' + str(host_count_per_proxy)
