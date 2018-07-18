@@ -23,13 +23,21 @@ print 'arguments received = ' + str(argument_count-1)
 destination_proxy_count = len(sys.argv)-2
 print 'destination proxy count = ' + str(destination_proxy_count)
 
-# get proxy info by name
-proxyid = zapi.proxy.get(
+# look if every proxy exists. [1:] means to skip the first array element which is filename
+for proxy in sys.argv[1:]:
+	proxyid = zapi.proxy.get(
 			output = ['proxyid'],
-			filter={'host':sys.argv[1]}
+			filter={'host':proxy}
+			)
+	print proxyid
+
+#calculate the source proxy ID
+source_proxy = zapi.proxy.get(
+                        output = ['proxyid'],
+                        filter={'host':sys.argv[1]}
 			)
 
-for id in proxyid:
+for id in source_proxy:
 	print sys.argv[1]+'='+id['proxyid']
 
 	#get all hosts which belongs to proxy
