@@ -18,6 +18,9 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
+argument_count = len(sys.argv)
+print 'arguments received = ' + str(argument_count-1)
+
 # get proxy info by name
 proxyid = zapi.proxy.get(
 			output = ['proxyid'],
