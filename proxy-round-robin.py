@@ -39,8 +39,8 @@ for id in proxyid:
 				)
 	for proxy in proxies:
 		for idx,host in enumerate(proxy['hosts']):
-			destination = idx % 2
-			print str(destination) + ' = ' + str(host['hostid'])
+			destination = idx % destination_proxy_count + 1
+			print 'host with id:' + str(host['hostid']) + ' will be delivered to destination proxy ' + str(destination)
 
 host_count_per_proxy = len(proxy['hosts'])
 print 'houst count per proxy ' + sys.argv[1] + ' = ' + str(host_count_per_proxy)
