@@ -98,7 +98,7 @@ if len(sys.argv) > 1:
 
 		# show how many hosts are on source proxy
 		host_count_per_proxy = len(proxy['hosts'])
-		print 'houst count per proxy ' + sys.argv[1] + ' = ' + str(host_count_per_proxy)
+		print 'host count per proxy ' + sys.argv[1] + ' = ' + str(host_count_per_proxy)
 
 	else:
 		print 'no second argument was received. nothing to do'
