@@ -29,7 +29,11 @@ for proxy in sys.argv[1:]:
 			output = ['proxyid'],
 			filter={'host':proxy}
 			)
-	print proxyid
+	if proxyid:
+		print proxyid
+	else:
+		print 'Proxy ' + proxy + ' not found'
+		exit()
 
 #calculate the source proxy ID
 source_proxy = zapi.proxy.get(
