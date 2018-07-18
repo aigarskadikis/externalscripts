@@ -33,8 +33,11 @@ for id in proxyid:
 				selectHosts = 'extend'
 				)
 	for proxy in proxies:
-		for host in proxy['hosts']:
-			print host['hostid']
+		for idx,host in enumerate(proxy['hosts']):
+			print str(idx) + ' = ' + str(host['hostid'])
+
 host_count_per_proxy = len(proxy['hosts'])
 print 'houst count per proxy ' + sys.argv[1] + ' = ' + str(host_count_per_proxy)
+
+
 
