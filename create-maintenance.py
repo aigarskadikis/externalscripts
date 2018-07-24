@@ -21,22 +21,24 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
+# define the API call from
+# https://www.zabbix.com/documentation/3.4/manual/api/reference/maintenance/create
 maintenance = {
-"groupids": ["24"],
-"name": "test_maintenance",
-"maintenance_type": 0,
-"active_since": 1532260800,
-"active_till": 1532347200,
-"description": "I am trying to create a maintenance via API",
-"timeperiods": [{
-"timeperiod_type": "0",
-"start_date": 1532268000,
-"period": 3600,
-}]
+	"groupids": ["24"],
+	"name": "test_maintenance",
+	"maintenance_type": 0,
+	"active_since": 1532260800,
+	"active_till": 1532347200,
+	"description": "I am trying to create a maintenance via API",
+	"timeperiods": [{
+		"timeperiod_type": "0",
+		"start_date": 1532268000,
+		"period": 3600
+	}]
 }
 
 def create_maintenance(zbx, maintenance):
   zbx.maintenance.create(maintenance)
+
+# execute
 create_maintenance(zapi, maintenance)
-
-
