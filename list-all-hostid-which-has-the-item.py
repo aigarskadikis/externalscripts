@@ -21,13 +21,6 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
-# define the API call from
-# https://www.zabbix.com/documentation/3.4/manual/api/reference/maintenance/create
-
-# define the methon
-#def create_maintenance(zbx, request):
-for host in zapi.item.get(output='extend',search={'key_':'system.run[vcgencmd measure_temp | sed "s/^.*=\\|..$//g"]'},sortfield='name'):
-  print host['hostid']
-
-# execute
-#create_maintenance(zapi, request)
+for host in zapi.item.get(output='extend',search={'key_':'zabbix[proxy,Home,lastaccess]'},sortfield='name'):
+  for host_conn in zapi.host.get(filter={'hostid':host['hostid']}):
+    print host_conn
