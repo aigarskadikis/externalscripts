@@ -7,12 +7,10 @@ ZABBIX_SERVER = config.url
 zapi = ZabbixAPI(ZABBIX_SERVER)
 zapi.login(config.username, config.password)
 
-# set exception arry
+# set exception array
 file = open('exceptional.hostgroups', 'r')
 exception_list = file.read().splitlines()
 file.close()
-
-print exception_list
 
 # use Zabbix API procedure hostgroup.get to get all hostgroups 
 # +execute selectHosts query to get array of assigned hosts
@@ -21,6 +19,5 @@ for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
   if not hosts['hosts']:
     # check if item is in list
     if hosts['name'] not in exception_list:
-      # print the groupid and name
-      #print hosts['groupid']+','+hosts['name']
+      # print the hostgroup name
       print hosts['name']
