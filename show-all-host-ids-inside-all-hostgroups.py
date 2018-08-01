@@ -13,4 +13,4 @@ for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
   # detects if array is empty
   if not hosts['hosts']:
     # show the group name
-    print hosts['name']
+    print hosts['groupid']+','+hosts['name']
