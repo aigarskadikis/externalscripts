@@ -21,3 +21,6 @@ for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
     if hosts['name'] not in exception_list:
       # print the hostgroup name
       print hosts['name']
+      if len(sys.argv) > 1:
+        if str(sys.argv[1]) == 'delete':
+          print 'deleting ' + hosts['name']
