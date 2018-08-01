@@ -12,5 +12,11 @@ zapi.login(config.username, config.password)
 for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
   # detects if array is empty
   if not hosts['hosts']:
-    # show the group name
+    # go through exceptional file line by line and compare the host groups
+    file = open('exceptional.groups', 'r')
+    for line in file.read().splitlines():
+      # if the host group name is in the file
+      if hosts['name'] == line:
+        print '['+line+']'+' is an exception'
     print hosts['groupid']+','+hosts['name']
+    file.close()
