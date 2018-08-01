@@ -14,9 +14,8 @@ for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
   if not hosts['hosts']:
     # go through exceptional file line by line and compare the host groups
     file = open('exceptional.groups', 'r')
-    for line in file.read().splitlines():
-      # if the host group name is in the file
-      if hosts['name'] == line:
-        print '['+line+']'+' is an exception'
-    print hosts['groupid']+','+hosts['name']
+    if not file.read().find(hosts['name']):
+      print '['+hosts['name']+']'+' is an exception'
+    else:
+      print hosts['groupid']+','+hosts['name']
     file.close()
