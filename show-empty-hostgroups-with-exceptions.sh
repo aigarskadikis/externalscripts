@@ -1,5 +1,5 @@
 #!/bin/python
-from pyzabbix import ZabbixAPI
+from pyzabbix import ZabbixAPI, ZabbixAPIException
 import sys
 sys.path.insert(0,'/var/lib/zabbix')
 import config
@@ -20,7 +20,12 @@ for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
     # check if item is in list
     if hosts['name'] not in exception_list:
       # print the hostgroup name
-      print hosts['name']
+      print hosts
       if len(sys.argv) > 1:
         if str(sys.argv[1]) == 'delete':
-          print 'deleting ' + hosts['name']
+          print 'deleting ' + hosts['groupid']
+          try:
+            zapi.hostgroup.delete(hosts['groupid'])
+          except ZabbixAPIException, e:
+            print e
+          
