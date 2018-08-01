@@ -17,5 +17,7 @@ zapi.login(config.username, config.password)
 
 # Get a list of all issues (AKA tripped triggers)
 for hosts in zapi.hostgroup.get(output='extend',selectHosts='query'):
-  print hosts['hosts']
+  # detects if array is empty
+  if not hosts['hosts']:
+    print hosts['name']
 
