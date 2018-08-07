@@ -1,4 +1,4 @@
-#!/bin/python
+#!/usr/bin/env python
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 import sys
 sys.path.insert(0,'/var/lib/zabbix')
@@ -12,7 +12,7 @@ file = open('exceptional.hostgroups', 'r')
 exception_list = file.read().splitlines()
 file.close()
 
-# use Zabbix API procedure hostgroup.get to get all hostgroups 
+# use Zabbix API procedure hostgroup.get to get all hostgroups
 # +execute selectHosts query to get array of assigned hosts
 for hosts in zapi.hostgroup.get(output='extend',selectHosts='query',selectTemplates='query'):
   # detects if array is empty
@@ -30,4 +30,4 @@ for hosts in zapi.hostgroup.get(output='extend',selectHosts='query',selectTempla
               zapi.hostgroup.delete(hosts['groupid'])
             except ZabbixAPIException, e:
               print e
-          
+
