@@ -19,17 +19,23 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 zapi.login(config.username, config.password)
 
 #query host id by parsing hostname as argument 1
-hosts = zapi.host.get (
-		output=['name'],
-		filter={'hostid': sys.argv[1]})
+hosts = zapi.host.get(
+  output = ['name'],
+  filter = {
+    'hostid': sys.argv[1]
+  })
 
 for host in hosts:
   print host['name']
-  replacement = zapi.host.get (
-              output=['hostid'],
-              filter={'name': sys.argv[2]})
-  if replacement:
-    print sys.argv[2]+' exists'
-  else:
-    zapi.do_request('host.update', {'hostid':sys.argv[1],'name': sys.argv[2]})
-
+replacement = zapi.host.get(
+  output = ['hostid'],
+  filter = {
+    'name': sys.argv[2]
+  })
+if replacement:
+  print sys.argv[2] + ' exists'
+else :
+  zapi.do_request('host.update', {
+    'hostid': sys.argv[1],
+    'name': sys.argv[2]
+  })
