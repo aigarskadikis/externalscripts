@@ -18,7 +18,6 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
-#query host id by parsing hostname as argument 1
 hosts = zapi.host.get(
   output = ['name'],
   filter = {
