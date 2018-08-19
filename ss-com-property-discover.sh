@@ -28,11 +28,14 @@ httpcode=$(curl -s -o /dev/null -w "%{http_code}" "$url")
 if [ "$httpcode" -eq "200" ]; then
 #echo $url
 array[nr]=$(curl -s "$url" | tr -cd '[:print:]' | sed "s|<tr|\n<tr|g;s|<\/tr>|\n|g" |\
-grep "id..tr_[0-9]" | sed "s|<td|\n<td|g" | sed "2~10d" | sed "3~9d" | sed "3~8d" | sed "1~7d" |\
+grep "id..tr_[0-9]" | sed "s|<td|\n<td|g" | sed "1~10d" | sed "1~9d" | sed "2~8d" | sed "s|<br>|, |g" |\
 sed "s|^.*\/msg\/|https:\/\/www.ss.com\/msg\/|g;s|\.html..id.*$|\.html|g" | sed "s/<[^>]*>//g" |\
 sed "s|^|\"|g;s|$|\"|g" |\
 sed ': loop;
 i {\"{#URL}\":
+a ,
+n;
+i \"{#PLACE}\":
 a ,
 n;
 i \"{#ROOMS}\":
@@ -62,5 +65,5 @@ done
 #output all array elements
 #replace spaces with new line characters
 #convert output to JSON format for Zabbix LLD dicover prototype
-echo "${array[@]}" | tr -cd '[:print:]' | sed "s/^/{\"data\":[/;s/,$/]}/"
+echo "${array[@]}" | tr -cd '[:print:]' | sed "s/^/{\"data\":[/;s/,$/]}/" 
 
