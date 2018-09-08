@@ -54,7 +54,7 @@ i \"{#PRICE}\":
 a },
 n;
 b loop' |\
-tr -cd "[:print:]")
+tr -cd "[:print:]" | sed 's/\\/\\\\/g')
 #echo "${array[nr]}"
 else
 nr=$((nr-1))
