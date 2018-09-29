@@ -73,7 +73,7 @@ echo "${array[@]}" | tr -cd '[:print:]' | sed "s/^/{\"data\":[/;s/,$/]}/"
 # 55 * * * * cd /usr/local/share/zabbix/externalscripts && ./ss-com-property-discover.sh https://www.ss.com/lv/real-estate/flats/riga/all/sell/ | sed 's/\\\\/\\\\\\\\/g' |sed 's|\"|\\\\\"|g' > /dev/shm/sell.zbx && sed -i "s|^|\"ss.com\ flats\ sell\" discover.ss.items\ \"|;s|$|\"|" /dev/shm/sell.zbx && /usr/local/bin/zabbix_sender -z 127.0.0.1 -i /dev/shm/sell.zbx
 # to use this at crontab
 
-# on CentOS 7 use
-# */15 * * * * cd /usr/lib/zabbix/externalscripts && ./ss-com-property-discover.sh https://www.ss.com/lv/real-estate/flats/riga/all/hand_over | sed 's|\"|\\\\\"|g' > /dev/shm/hand.over.zbx && sed "s|^|\"ss.com\ flats\ hand\ over\" discover.ss.items\ \"|;s|$|\"|" /dev/shm/hand.over.zbx > /dev/shm/hand.over.39.zbx && /usr/bin/zabbix_sender -z 127.0.0.1 -i /dev/shm/hand.over.39.zbx
+# on CentOS 7 use to use this at crontab
+#38 * * * * cd /usr/lib/zabbix/externalscripts && ./ss-com-property-discover.sh https://www.ss.com/lv/real-estate/flats/riga/all/hand_over | sed 's/\\/\\\\/g' |sed 's|\"|\\\"|g' > /dev/shm/hand.over.zbx && sed "s|^|\"ss.com\ flats\ hand\ over\" discover.ss.items\ \"|;s|$|\"|" /dev/shm/hand.over.zbx > /dev/shm/hand.over.39.zbx && /usr/bin/zabbix_sender -z 127.0.0.1 -i /dev/shm/hand.over.39.zbx
 
-#51 * * * * cd /usr/lib/zabbix/externalscripts && ./ss-com-property-discover.sh https://www.ss.com/lv/real-estate/flats/riga/all/sell/ | sed 's/\\\\/\\\\\\\\/g' |sed 's|\"|\\\\\"|g' > /dev/shm/sell.zbx && sed -i "s|^|\"ss.com\ flats\ sell\" discover.ss.items\ \"|;s|$|\"|" /dev/shm/sell.zbx && /usr/bin/zabbix_sender -z 127.0.0.1 -i /dev/shm/sell.zbx
+#41 * * * * cd /usr/lib/zabbix/externalscripts && ./ss-com-property-discover.sh https://www.ss.com/lv/real-estate/flats/riga/all/sell/ | sed 's/\\/\\\\/g' |sed 's|\"|\\\"|g' > /dev/shm/sell.zbx && sed -i "s|^|\"ss.com\ flats\ sell\" discover.ss.items\ \"|;s|$|\"|" /dev/shm/sell.zbx && /usr/bin/zabbix_sender -z 127.0.0.1 -i /dev/shm/sell.zbx
