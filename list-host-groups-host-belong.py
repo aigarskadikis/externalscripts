@@ -4,6 +4,8 @@ show the groups where host belongs
 """
 
 from pyzabbix import ZabbixAPI
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 #import credentials from external file
 import sys
@@ -20,10 +22,22 @@ try:
     zapi.login(config.username, config.password)
     hostname = sys.argv[1]
     groups = "Groups assigned to the " + hostname + ":"
-    host = zapi.host.get(filter={"host": hostname},selectGroups = True)
+    
+    # get host id
+    for hostid in zapi.host.get(output = ['hostid'],filter = {'name': hostname}):
+      id = hostid['hostid']
+    
+    # get all hostgroups by hostid 
+    data = zapi.hostgroup.get(output='extend',hostids=id)
+
+    # print intro, show the argument was received
     print groups
-    for x in host[0]['groups']:
-        print x['name']
+    
+    # print all host groups
+    for groupname in data:
+      print groupname['name']
+    
+    # close session
     zapi.user.logout
 except:
     print "No hostname defined"
