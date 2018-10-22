@@ -11,26 +11,22 @@ import config
 # we will search latest very latest values
 import time
 
+# set current unixtime in varible and print it outloud
 ctime = time.time()
 print ctime
-# The hostname at which the Zabbix web interface is available
 
 ZABBIX_SERVER = config.url
 
 zapi = ZabbixAPI(ZABBIX_SERVER)
 
 # Login to the Zabbix API
-
 zapi.login(config.username, config.password)
 
-# to get current timestamp in bash use 'date +%s'
-
-#zapi.history.get(hostids=10084, itemids=218992, history=0, time_from=1540191853.0, time_till=1540192780.0, sortfield='clock', sortorder='ASC')
 var = zapi.history.get(
-			hostids=10084,
-			itemids=218992,
+#			hostids=10084,
+#			itemids=218992,
 			history=3,
-			time_from = ctime-3600,
+			time_from = ctime-600,
 			time_till = ctime,
 			filter={
 				"itemid":"218992"
@@ -39,6 +35,4 @@ var = zapi.history.get(
 
 print var
 
-
-#zapi.history.get(hostids=10350, itemids=46525, history=0, time_from=1538132400.0, time_till=1538136000.0, sortfield='clock', sortorder='ASC', filter={"itemid":"46525"})
 
