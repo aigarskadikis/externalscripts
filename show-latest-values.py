@@ -1,10 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 
 # import credentials from external file
-
 import sys
 sys.path.insert(0, '/var/lib/zabbix')
 import config
@@ -13,7 +11,6 @@ import time
 
 # set current unixtime in varible and print it outloud
 ctime = time.time()
-print ctime
 
 ZABBIX_SERVER = config.url
 
@@ -22,17 +19,19 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
-var = zapi.history.get(
-#			hostids=10084,
-#			itemids=218992,
-			history=3,
-			time_from = ctime-600,
-			time_till = ctime,
-			filter={
-				"itemid":"218992"
-				}
-			)
+# latest 'Free swap space' values on 'Zabbix server' in laste 10 minutes
+print
+print "Current unixtime:"
+print ctime
+print
 
+print "Execute only filter and use itemid:"
+var = zapi.history.get(filter={"itemid":"23309"},history=3, time_from = ctime-600, time_till = ctime)
 print var
+print
 
+print "Use parameters: 'hostids' and 'itemids':"
+var = zapi.history.get(hostids=10084,itemids=23309,history=3, time_from = ctime-600, time_till = ctime)
+print var
+print
 
