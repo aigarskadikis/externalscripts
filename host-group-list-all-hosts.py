@@ -23,10 +23,12 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
+hostgroup = sys.argv[1]
+
 request=zapi.do_request('hostgroup.get', {
 		"selectHosts":"extend", 
 		"output": "extend",
-		"filter": { "name": [ "Zabbix proxy" ] } })
+		"filter": { "name": [ hostgroup ] } })
 
 ##pprint(request)
 
