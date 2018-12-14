@@ -32,5 +32,5 @@ request=zapi.do_request('hostgroup.get', {
 for r in request["result"]:
 ##        print str(r) + '\n'
 	for host in r["hosts"]:
-		print host["name"]
+		print host["name"] + ' with hostid ' + host["hostid"]
 		
