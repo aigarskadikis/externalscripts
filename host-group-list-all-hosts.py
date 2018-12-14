@@ -30,10 +30,18 @@ request=zapi.do_request('hostgroup.get', {
 		"output": "extend",
 		"filter": { "name": [ hostgroup ] } })
 
-##pprint(request)
+#pprint(request)
 
 for r in request["result"]:
 ##        print str(r) + '\n'
 	for host in r["hosts"]:
 		print host["name"] + ' with hostid ' + host["hostid"]
+
+		lookTemplates=zapi.do_request('host.get', {
+			"selectParentTemplates":"extend",
+			"output":"extend",
+			"filter": { "host": [ host["name"] ] } } )
+
+		pprint(lookTemplates)
+		
 		
