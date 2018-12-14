@@ -24,10 +24,13 @@ zapi.login(config.username, config.password)
 
 request=zapi.do_request('hostgroup.get', {
 		"selectHosts":"extend", 
-		"output": "query",
-		"filter": { "name": [ "Zabbix servers" ] } })
+		"output": "extend",
+		"filter": { "name": [ "Zabbix servers" , "Linux servers"] } })
 
-pprint(request)
+##pprint(request)
 
-for r in request:
-        print r
+for r in request["result"]:
+##        print str(r) + '\n'
+	for host in r["hosts"]:
+		print host["name"]
+		
