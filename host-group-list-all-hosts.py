@@ -25,7 +25,7 @@ zapi.login(config.username, config.password)
 request=zapi.do_request('hostgroup.get', {
 		"selectHosts":"extend", 
 		"output": "extend",
-		"filter": { "name": [ "Zabbix servers" , "Linux servers"] } })
+		"filter": { "name": [ "Zabbix proxy" ] } })
 
 ##pprint(request)
 
