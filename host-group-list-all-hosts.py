@@ -4,6 +4,7 @@ Shows a list of all current issues (AKA tripped triggers)
 """
 
 #for argument support
+import os
 import sys
 from pprint import pprint
 
