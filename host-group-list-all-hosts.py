@@ -22,6 +22,12 @@ zapi = ZabbixAPI(ZABBIX_SERVER)
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
 
-request=zapi.do_request('hostgroup.get', {"selectHosts":"extend", "output": "extend", "filter": { "name": [ "Zabbix servers", "Linux servers" ] } })
+request=zapi.do_request('hostgroup.get', {
+		"selectHosts":"extend", 
+		"output": "query",
+		"filter": { "name": [ "Zabbix servers" ] } })
 
 pprint(request)
+
+for r in request:
+        print r
