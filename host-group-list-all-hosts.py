@@ -14,10 +14,7 @@ zapi.login(config.username, config.password)
 
 # main program
 hostgroup = sys.argv[1]
-request=zapi.do_request('hostgroup.get', {
-  "selectHosts":"extend", 
-  "output": "extend",
-  "filter": { "name": [ hostgroup ] } })
+request=zapi.do_request('hostgroup.get',{"selectHosts":"extend","output": "extend","filter": { "name": [ hostgroup ] } })
 
 for r in request["result"]:
  for host in r["hosts"]:
