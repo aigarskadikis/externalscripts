@@ -3,7 +3,7 @@
 import os
 import sys
 from pprint import pprint
-from pyzabbix import ZabbixAPI
+from pyzabbix import ZabbixAPI, ZabbixAPIException
 
 sys.path.insert(0,'/var/lib/zabbix')
 import config
@@ -29,6 +29,19 @@ for host in request:
      # if the the argument given match the template then print on screen what will get unlinked
      print "TEMPLATE \""+ e["name"] +"\" (templateid:"+e["templateid"]+") will get unlinked from host \""+h["name"] +"\" (hostid:" + h["hostid"]+ ")\n"
      
-     # this is sensitive line. remove if want only test scenario
+     # SENSITIVE LINE. remove template from host
      zapi.host.update(hostid=h["hostid"],templates_clear={'templateid':e["templateid"]})
+
+     # search if host has any agent interfaces
+     for i in zapi.hostinterface.get(output='extend',hostids=h["hostid"],filter={'type':'1'}):
+      # if the host contains agent interface
+      if i:
+       print "Zabbix agent interface (interfaceid:"+ i["interfaceid"]  +") will be removed from host \"" + h["name"] + "\""
+       
+       # SENSITIVE LINE. try to delete interface 
+       try:      
+        delete=zapi.hostinterface.delete(i["interfaceid"])
+       except ZabbixAPIException, e:
+         print "Cannot remove agent interface. probably some tamplates are using it"
+       
 
