@@ -27,4 +27,5 @@ for r in request["result"]:
    for e in t["parentTemplates"]:
     if (str(e["name"]) == str(sys.argv[2])):
      print "TEMPLATE \""+ e["name"] +"\" (templateid:"+e["templateid"]+") will get unlinked from host \""+host["name"] +"\" (hostid:" + host["hostid"]+ ")\n"
+     zapi.host.update(hostid=host["hostid"],templates_clear={'templateid':e["templateid"]})
 
