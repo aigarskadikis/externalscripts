@@ -56,7 +56,7 @@ publicurl=$(echo "$oneentry" | grep "<link rel=\"alternate\"" | egrep -o "https.
 
 #check if this content have at least on link 
 linkcount=$(echo "$oneentry" | sed "s/<content type=.html.>/<content>\n/g" | sed '1,/<content/d;/<\/content/,$d' | \
-sed "s/\d034\|\d039/\n/g" | grep "^http.*://\|^\/[0-9]\+\/[0-9]\+\/.*\.html$" | sed "s/\\\/\\\\\\\/g" | wc -l)
+sed "s/\d034\|\d039/\n/g" | grep "^http.*://\|^\/[0-9]\+\/[0-9]\+\/.*\.html$\|^\/search\/label\/.*$" | sed "s/\\\/\\\\\\\/g" | wc -l)
 
 if [ "$linkcount" -gt "0" ]; then
 
