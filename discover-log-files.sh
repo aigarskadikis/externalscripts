@@ -1,7 +1,6 @@
 #!/bin/bash
-CALL=$(find /var/log/zabbix -name zabbix_server.*.gz)
-#CALL=$(find /var/log/zabbix/`date +%m`-`date +%Y`/`date +%d`/ -name zabbix_server.log)
-MACRO=LOGFILE
+CALL=$(find $2 -name $3)
+MACRO=$1
 COUNT=$(echo $CALL| xargs -n1 | wc -l)
 printf "{\"data\":[\n"
 echo $CALL | xargs -n1 | cut -d'>' -f2- | cut -d'<' -f1 | while read line; do \
@@ -13,3 +12,9 @@ echo $CALL | xargs -n1 | cut -d'>' -f2- | cut -d'<' -f1 | while read line; do \
 fi;
 done
 printf "]}\n"
+
+# discover all conf files in /etc direcotry
+# ./discover-files.sh CONF /etc *.conf
+
+# discover files in /var/log directory  containing this year in filename
+# ./discover-log-files.sh F /var/log *$(date +%Y)*
