@@ -2,6 +2,7 @@
 
 import os
 import sys
+import glob
 from pprint import pprint
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 
@@ -9,6 +10,7 @@ sys.path.insert(0,'/var/lib/zabbix')
 import config
 ZABBIX_SERVER = config.url
 zapi = ZabbixAPI(ZABBIX_SERVER)
+#zapi.session.verify = False
 zapi.login(config.username, config.password)
 
 if len(sys.argv) <= 1:
@@ -16,15 +18,6 @@ if len(sys.argv) <= 1:
     exit(1)
 
 path = sys.argv[1]
-
-# The hostname at which the Zabbix web interface is available
-ZABBIX_SERVER = 'https://zabbix.example.org'
-
-zapi = ZabbixAPI(ZABBIX_SERVER)
-
-# Login to the Zabbix API
-#zapi.session.verify = False
-zapi.login("Admin", "zabbix")
 
 rules = {
     'applications': {
@@ -79,10 +72,13 @@ rules = {
     'valueMaps': {
         'createMissing': True,
         'updateExisting': True
-    },
+    }
 }
 
+
+
 if os.path.isdir(path):
+    print 'direcotry detected'
     #path = path/*.xml
     files = glob.glob(path+'/*.xml')
     for file in files:
@@ -90,11 +86,13 @@ if os.path.isdir(path):
         with open(file, 'r') as f:
             template = f.read()
             try:
-                zapi.confimport('xml', template, rules)
+                rrr=zapi.confimport('xml', template, rules)
+                print(rrr)
             except ZabbixAPIException as e:
                 print(e)
         print('')
 elif os.path.isfile(path):
+    print 'xml input detected'
     files = glob.glob(path)
     for file in files:
         with open(file, 'r') as f:
