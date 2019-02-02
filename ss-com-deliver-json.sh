@@ -7,6 +7,8 @@
 jobid=$(echo $2 | sed "s/\/$//" | sed "s/^.*\///g")
 out=$3/zbx.ss.com.$jobid.json
 
+/usr/bin/zabbix_sender -z 127.0.0.1 -s "$1" -k files.to.monitor -o $(echo "{\"data\":[{\"{#ZBX.SS.COM.TEMP}\":\"$out\"}]}")
+
 cd /usr/lib/zabbix/externalscripts
 ./ss-com-property-discover.sh $2 > $out
 
