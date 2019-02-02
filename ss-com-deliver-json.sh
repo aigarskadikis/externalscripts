@@ -7,11 +7,14 @@
 jobid=$(echo $2 | sed "s/\/$//" | sed "s/^.*\///g")
 out=$3/zbx.ss.com.$jobid.json
 
+# set temp file monitoring in zabbix. will check date and size
 /usr/bin/zabbix_sender -z 127.0.0.1 -s "$1" -k files.to.monitor -o $(echo "{\"data\":[{\"{#ZBX.SS.COM.TEMP}\":\"$out\"}]}")
 
+# fetch the information
 cd /usr/lib/zabbix/externalscripts
 ./ss-com-property-discover.sh $2 > $out
 
+# check if the file is valid json
 jq . $out > /dev/null
 /usr/bin/zabbix_sender -z 127.0.0.1 -s "$1" -k json.error -o $?
 
