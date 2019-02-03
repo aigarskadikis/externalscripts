@@ -18,6 +18,12 @@ cd /usr/lib/zabbix/externalscripts
 jq . $out > /dev/null
 /usr/bin/zabbix_sender -z 127.0.0.1 -s "$1" -k json.error -o $?
 
+jq . $out > /dev/null
+if [ $? -eq 0 ]; then
+
+# send how many items are active 
+/usr/bin/zabbix_sender -z 127.0.0.1 -s "$1" -k msg.count -o $(jq . $out | grep -c "{#URL}")
+
 # escape the backslash
 sed -i 's/\\/\\\\/g' $out
 
@@ -29,3 +35,5 @@ sed -i "s|^|\"$1\" discover.ss.items\ \"|;s|$|\"|" $out
 
 # send the json to server
 zabbix_sender -z 127.0.0.1 -i $out
+
+fi
