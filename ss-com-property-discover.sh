@@ -59,3 +59,19 @@ done
 # convert output to JSON format for Zabbix LLD trapper item
 echo "${array[@]}" | tr -cd '[:print:]' | sed "s/^/{\"data\":[/;s/,$/]}/" 
 
+# install additional user
+# groupadd ss.com
+# useradd -s /sbin/nologin -g ss.com ss.com
+# usermod -a -G zabbix ss.com
+# grep ss.com /etc/passwd
+# id ss.com
+# chmod -R 770 /usr/lib/zabbix/externalscripts/*
+
+# ser global cronjob
+# */15 * * * * ss.com cd /usr/lib/zabbix/externalscripts && ./ss-com-deliver-json.sh "ss.com flats hand over" https://www.ss.com/en/real-estate/flats/riga/all/hand_over /dev/shm
+# 47 * * * * ss.com cd /usr/lib/zabbix/externalscripts && ./ss-com-deliver-json.sh "ss.com flats sell" https://www.ss.com/en/real-estate/flats/riga/all/sell/ /dev/shm
+
+
+
+
+
