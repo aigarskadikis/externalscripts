@@ -20,11 +20,10 @@ for line in reader:
  # check if this host exists in zabbix
  result = zapi.host.get({"filter":{"host" :line['name']}}) 
  if not result:
-   #print line['name'],line['address'],line['template'],line['group']
+  try:
+   proxy_id=zapi.proxy.get({"output": "proxyid","selectInterface": "extend","filter":{"host":line['proxy']}})[0]['proxyid']
    print line['template']
-   
    templates=line['template'].split(";")
-
    groups=line['group'].split(";")
    # take first group from group array
    group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
@@ -34,6 +33,7 @@ for line in reader:
    hostid = zapi.host.create ({
         "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
         "groups": [{ "groupid": group_id }],
+        "proxy_hostid":proxy_id,
         "templates": [{ "templateid": template_id }]})['hostids']
    # add additional templates
    for one_template in templates:
@@ -48,6 +48,10 @@ for line in reader:
      print zapi.hostgroup.massadd({"groups":id_of_hostgroup,"hosts":hostid})
     except Exception as e:
      print str(e)
+
+  # proxy do not exist
+  except Exception as e:
+   print "proxy",line['proxy'],"does not exist"
 
  else:
    print line['name'],"already exist"
