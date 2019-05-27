@@ -26,22 +26,30 @@ for line in reader:
    templates=line['template'].split(";")
 
    groups=line['group'].split(";")
-   # look for first group in group array
+   # take first group from group array
    group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
+   # take first template from template array
    template_id = zapi.template.get({"filter" : {"name" : templates[0]}})[0]['templateid']
+   # crete a host an put hostid instantly in the 'hostid' variable
    hostid = zapi.host.create ({
         "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
         "groups": [{ "groupid": group_id }],
         "templates": [{ "templateid": template_id }]})['hostids']
    # add additional templates
-   for templ in templates:
-    idiftemp = zapi.template.get({"filter" : {"name" : templ}})[0]['templateid']   
+   for one_template in templates:
+    id_of_template = zapi.template.get({"filter" : {"name" : one_template}})[0]['templateid']   
     try:
-     print zapi.template.massadd({"templates":idiftemp,"hosts":hostid})
+     print zapi.template.massadd({"templates":id_of_template,"hosts":hostid})
     except Exception as e:
      print str(e)
+   for one_hostgroup in groups:
+    id_of_hostgroup = zapi.hostgroup.get({"filter" : {"name" : one_hostgroup}})[0]['groupid']
+    try:
+     print zapi.hostgroup.massadd({"groups":id_of_hostgroup,"hosts":hostid})
+    except Exception as e:
+     print str(e)
+
  else:
-   print line['name'],"already exit"
-   # count the lenght of tempate array
+   print line['name'],"already exist"
 
 file.close()
