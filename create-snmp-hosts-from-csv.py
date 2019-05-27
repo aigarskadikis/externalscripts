@@ -36,12 +36,28 @@ for line in reader:
    # look for first group in group array
    group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
    print group_id
-   #    t = zapi.host.create (
-   #    {
-   #        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
-   #        "groups": [{ "groupid": group_id }],
-   #        "templates": [{ "templateid": template_id }],
-   #    })
+
+
+   t = zapi.host.create ({
+        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
+        "groups": [{ "groupid": group_id }],
+        "templates": [{ "templateid": template_id }]})
+
+   template_count = len(templates)
+   print template_count
+   if len(templates)>1:
+    print line['name'],"has multiple templates"
+    
+    # get hostid
+    host2update = zapi.host.get({"filter":{"name":line['name']}})[0]['hostid']
+    
+    zapi.host.update ({
+       "hostid":host2update,
+       "templates": [{"templateid":zapi.template.get({"filter" : {"name" : templates[1]}})[0]['templateid']}],
+       })
+
+
+
  else:
    print line['name'],"already exit"
    # count the lenght of tempate array
