@@ -25,13 +25,6 @@ for line in reader:
    
    templates=line['template'].split(";")
 
-   # put all templates in array
-   temp_array=[]
-   for templ in templates:
-    idiftemp = "template:"+str(zapi.template.get({"filter" : {"name" : templ}})[0]['templateid'])
-    temp_array.append(idiftemp)
-   print temp_array
-   
    groups=line['group'].split(";")
    # look for first group in group array
    group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
@@ -41,6 +34,15 @@ for line in reader:
         "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
         "groups": [{ "groupid": group_id }],
         "templates": [{ "templateid": template_id }]})
+   # add additional templates
+   for templ in templates:
+    idiftemp = zapi.template.get({"filter" : {"name" : templ}})[0]['templateid']   
+    try:
+     hostid=zapi.host.get({"filter":{"host":line['name']}})[0]["hostid"]
+     print hostid
+     print zapi.template.massadd({"templates":idiftemp,"hosts":hostid})
+    except Exception as e:
+     print str(e)
  else:
    print line['name'],"already exit"
    # count the lenght of tempate array
