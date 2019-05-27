@@ -23,21 +23,24 @@ for line in reader:
    #print line['name'],line['address'],line['template'],line['group']
    print line['template']
    
+   templates=line['template'].split(";")
+
    # put all templates in array
    temp_array=[]
-   for templ in line['template'].split(";"):
+   for templ in templates:
     idiftemp = "template:"+str(zapi.template.get({"filter" : {"name" : templ}})[0]['templateid'])
     temp_array.append(idiftemp)
-
    print temp_array
- 
+   
+   groups=line['group'].split(";")
    # look for first group in group array
-#   group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
-#   print group_id
-#   t = zapi.host.create ({
-#        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
-#        "groups": [{ "groupid": group_id }],
-#        "templates": [{ "templateid": template_id }]})
+   group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
+   template_id = zapi.template.get({"filter" : {"name" : templates[0]}})[0]['templateid']
+   print group_id
+   t = zapi.host.create ({
+        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
+        "groups": [{ "groupid": group_id }],
+        "templates": [{ "templateid": template_id }]})
  else:
    print line['name'],"already exit"
    # count the lenght of tempate array
