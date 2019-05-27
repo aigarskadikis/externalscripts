@@ -11,7 +11,7 @@ password="zabbix"
 zapi = ZabbixAPI(server=server)
 zapi.login(username, password)
 
-file = open("list1.txt",'rb')
+file = open("hostlist.txt",'rb')
 reader = csv.DictReader( file )
 
 # take the file and read line by line
@@ -21,47 +21,23 @@ for line in reader:
  result = zapi.host.get({"filter":{"host" :line['name']}}) 
  if not result:
    print line['name'],line['address'],line['template'],line['group']
+   
+   # put all templates in array
+   temp_array=[]
+   for templ in line['template'].split(";"):
+    temp_array.append(zapi.template.get({"filter" : {"name" : templ}})[0]['templateid'])
 
-   # create an array of templates
-   templates=line['template'].split(";")
-   print templates
-   # create an array of groups
-   groups=line['group'].split(";")
-   print groups
-
-   # look for first template in template array
-   template_id = zapi.template.get({"filter" : {"name" : templates[0]}})[0]['templateid']
-   print template_id
+   print temp_array
  
    # look for first group in group array
-   group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
-   print group_id
-
-
-   t = zapi.host.create ({
-        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
-        "groups": [{ "groupid": group_id }],
-        "templates": [{ "templateid": template_id }]})
-
-   template_count = len(templates)
-   print template_count
-   if len(templates)>1:
-    print line['name'],"has multiple templates"
-    
-    # get hostid
-    host2update = zapi.host.get({"filter":{"name":line['name']}})[0]['hostid']
-    
-    zapi.host.update ({
-       "hostid":host2update,
-       "templates": [{"templateid":zapi.template.get({"filter" : {"name" : templates[1]}})[0]['templateid']}],
-       })
-
-
-
+#   group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
+#   print group_id
+#   t = zapi.host.create ({
+#        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
+#        "groups": [{ "groupid": group_id }],
+#        "templates": [{ "templateid": template_id }]})
  else:
    print line['name'],"already exit"
    # count the lenght of tempate array
- 
-
 
 file.close()
