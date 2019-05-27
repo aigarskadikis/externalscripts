@@ -25,7 +25,9 @@ for line in reader:
    # put all templates in array
    temp_array=[]
    for templ in line['template'].split(";"):
-    temp_array.append(zapi.template.get({"filter" : {"name" : templ}})[0]['templateid'])
+    print templ
+    idiftemp = "template:"+str(zapi.template.get({"filter" : {"name" : templ}})[0]['templateid'])
+    temp_array.append(idiftemp)
 
    print temp_array
  
