@@ -20,12 +20,12 @@ for line in reader:
  # check if this host exists in zabbix
  result = zapi.host.get({"filter":{"host" :line['name']}}) 
  if not result:
-   print line['name'],line['address'],line['template'],line['group']
+   #print line['name'],line['address'],line['template'],line['group']
+   print line['template']
    
    # put all templates in array
    temp_array=[]
    for templ in line['template'].split(";"):
-    print templ
     idiftemp = "template:"+str(zapi.template.get({"filter" : {"name" : templ}})[0]['templateid'])
     temp_array.append(idiftemp)
 
