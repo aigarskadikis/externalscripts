@@ -29,17 +29,14 @@ for line in reader:
    # look for first group in group array
    group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
    template_id = zapi.template.get({"filter" : {"name" : templates[0]}})[0]['templateid']
-   print group_id
-   t = zapi.host.create ({
+   hostid = zapi.host.create ({
         "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
         "groups": [{ "groupid": group_id }],
-        "templates": [{ "templateid": template_id }]})
+        "templates": [{ "templateid": template_id }]})['hostids']
    # add additional templates
    for templ in templates:
     idiftemp = zapi.template.get({"filter" : {"name" : templ}})[0]['templateid']   
     try:
-     hostid=zapi.host.get({"filter":{"host":line['name']}})[0]["hostid"]
-     print hostid
      print zapi.template.massadd({"templates":idiftemp,"hosts":hostid})
     except Exception as e:
      print str(e)
