@@ -14,31 +14,37 @@ zapi.login(username, password)
 file = open("list1.txt",'rb')
 reader = csv.DictReader( file )
 
+# take the file and read line by line
 for line in reader:
- print line['name'],line['address'],line['template'],line['group']
-
- # create an array of templates
- templates=line['template'].split(";")
- print templates
- # create an array of groups
- groups=line['group'].split(";")
- print groups
-
- # look for first template in template array
- template_id = zapi.template.get({"filter" : {"name" : templates[0]}})[0]['templateid']
- print template_id
  
- # look for first group in group array
- group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
+ # check if this host exists in zabbix
+ result = zapi.host.get({"filter":{"host" :line['name']}}) 
+ if not result:
+   print line['name'],line['address'],line['template'],line['group']
 
-#    t = zapi.host.create (
-#    {
-#        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
-#        "groups": [{ "groupid": group_id }],
-#        "templates": [{ "templateid": template_id }],
-#    })
+   # create an array of templates
+   templates=line['template'].split(";")
+   print templates
+   # create an array of groups
+   groups=line['group'].split(";")
+   print groups
 
- # count the lenght of tempate array
+   # look for first template in template array
+   template_id = zapi.template.get({"filter" : {"name" : templates[0]}})[0]['templateid']
+   print template_id
+ 
+   # look for first group in group array
+   group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
+   print group_id
+   #    t = zapi.host.create (
+   #    {
+   #        "host":line['name'],"interfaces":[{"type":2,"dns":"","main":1,"ip": line['address'],"port": 161,"useip": 1,}],
+   #        "groups": [{ "groupid": group_id }],
+   #        "templates": [{ "templateid": template_id }],
+   #    })
+ else:
+   print line['name'],"already exit"
+   # count the lenght of tempate array
  
 
 
