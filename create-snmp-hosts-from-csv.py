@@ -4,14 +4,14 @@
 import csv
 from zabbix_api import ZabbixAPI
 
-server="http://127.0.0.1/"
-username="Admin"
-password="zabbix"
+import sys
+sys.path.insert(0,'/home/zabbix')
+import config
+ZABBIX_SERVER = config.url
+zapi = ZabbixAPI(ZABBIX_SERVER)
+zapi.login(config.username, config.password)
 
-zapi = ZabbixAPI(server=server)
-zapi.login(username, password)
-
-file = open("test.csv",'rb')
+file = open("input.csv",'rb')
 reader = csv.DictReader( file )
 
 # take the file and read line by line
@@ -22,15 +22,11 @@ for line in reader:
  if not zapi.host.get({"filter":{"host" :line['name']}}):
   print line['name'],"not yet registred"
   if zapi.proxy.get({"output": "proxyid","selectInterface": "extend","filter":{"host":line['proxy']}}):
-   print line['proxy'],"is in the instance"
+   #print line['proxy'],"is in the instance"
    proxy_id=zapi.proxy.get({"output": "proxyid","selectInterface": "extend","filter":{"host":line['proxy']}})[0]['proxyid']
    if proxy_id>0:
-     print line['proxy'],"exists"
-     print line['template']
      templates=line['template'].split(";")
-     print templates
      groups=line['group'].split(";")
-     print groups
      # take first group from group array
      group_id = zapi.hostgroup.get({"filter" : {"name" : groups[0]}})[0]['groupid']
      # take first template from template array
@@ -46,11 +42,9 @@ for line in reader:
      if len(templates)>1:
       # skip the first element in array
       for one_template in templates[1:]:
-       print "t: ",one_template
        try:
         tid=zapi.template.get({"filter" : {"name" : one_template}})[0]['templateid']
         if tid:
-          print "Temnplate:",one_template,"exist"
           # link new template
           try:
            nt=zapi.template.massadd({"templates":tid,"hosts":hostid})
@@ -62,11 +56,9 @@ for line in reader:
         print("Temnplate:",one_template,"does not exist")
 
       for one_hostgroup in groups[1:]:
-       print "g: ",one_hostgroup
        try:
         gid=zapi.hostgroup.get({"filter" : {"name" : one_hostgroup}})[0]['groupid']
         if gid:
-          print "Group",one_hostgroup,"exist"
           # link new hostgroup
           try:
            nhg=zapi.hostgroup.massadd({"groups":gid,"hosts":hostid})
