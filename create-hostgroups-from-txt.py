@@ -14,5 +14,7 @@ list = file.read().splitlines()
 file.close()
 
 for group in list:
- print group
- zapi.hostgroup.create ({ "name":group }) 
+ try:
+  e=zapi.hostgroup.create({"name":group})
+ except Exception as e:
+  print group,"already exists"
