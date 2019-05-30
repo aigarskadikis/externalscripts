@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # import hosts from txt file to Zabbix via API
 # and assign template and host group to them
 import csv
