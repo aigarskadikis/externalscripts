@@ -19,7 +19,13 @@ for line in reader:
  
  # check if this host exists in zabbix
  if zapi.host.get({"filter":{"host" :line['name']}}):
-  print zapi.host.get ({"output":"hostid","filter":{"host":line['name']}})[0]['hostid']
+  hostid = zapi.host.get ({"output":"hostid","filter":{"host":line['name']}})[0]['hostid']
+  print hostid
+  try:
+   zapi.host.update({"hostid": hostid,"name": line['visiable']})	
+
+  except:
+   print "cannot update host"
  else:
   print line['name'],"not exist"
 
