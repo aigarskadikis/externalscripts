@@ -12,10 +12,7 @@ zapi.session.verify=False
 
 zapi.login(config.username, config.password)
 
-hostid=zapi.host.get({"output":"hostid","filter":{"host":"Zabbix server"}})[0]['hostid']
+#hostid=zapi.host.get({"output":"hostid","filter":{"host":"Zabbix server"}})[0]['hostid']
 
-
-#pprint(zapi.hostinterface.get(output=["dns","ip","useip"],selectHosts=["hosts"],filter={"main": 1, "type": 1},hostids=["10084"]))
-
-
-pprint(zapi.hostinterface.get(output=["name","dns","ip","useip"],selectHosts=["hosts"],filter={"main": 1, "type": 1,"ip":"127.0.0.1"}))
+for intid in zapi.hostinterface.get(output=["dns","ip","useip"],selectHosts=["hosts"],filter={"main": 1, "type": 1,"ip":"127.0.0.1"}):
+ print intid['interfaceid']
