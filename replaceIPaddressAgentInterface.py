@@ -12,7 +12,20 @@ zapi.session.verify=False
 
 zapi.login(config.username, config.password)
 
-#hostid=zapi.host.get({"output":"hostid","filter":{"host":"Zabbix server"}})[0]['hostid']
+if len(sys.argv) > 1:
+ 
+ # search for an agent interface with the followinf IP address
+ for intid in zapi.hostinterface.get(output=["dns","ip","useip"],selectHosts=["hosts"],filter={"main": 1, "type": 1,"ip":sys.argv[1]}):
+  print intid['interfaceid']
+  
+  if len(sys.argv) > 2:
+   
+   # replace the IP addres
+   zapi.hostinterface.update(interfaceid=intid['interfaceid'],ip=sys.argv[2])
+  
+  else:
+   print 'no second argument is given. cannot change the ip address'
 
-for intid in zapi.hostinterface.get(output=["dns","ip","useip"],selectHosts=["hosts"],filter={"main": 1, "type": 1,"ip":"127.0.0.1"}):
- print intid['interfaceid']
+else:
+ print 'no argument was received. please type an existing IP address of zabbix agent device'
+
