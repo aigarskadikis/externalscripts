@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 import csv
-from zabbix_api import ZabbixAPI
+from pyzabbix import ZabbixAPI
+from pprint import pprint
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+import sys
+sys.path.insert(0,'/var/lib/zabbix')
+import config
+ZABBIX_SERVER = config.url
+zapi = ZabbixAPI(ZABBIX_SERVER)
+zapi.session.verify=False
+zapi.login(config.username, config.password)
 
-server="http://127.0.0.1/"
-username="Admin"
-password="zabbix"
-
-zapi = ZabbixAPI(server=server)
-zapi.login(username, password)
 
 file = open('hostgroups.txt', 'r')
 list = file.read().splitlines()
