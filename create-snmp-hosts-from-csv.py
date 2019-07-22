@@ -3,14 +3,15 @@
 # and assign template and host group to them
 import csv
 
+# pip install pyzabbix
+#from pyzabbix import ZabbixAPI
 from zabbix_api import ZabbixAPI
-# IT WILL NOT WORK IF YOU USE pyzabbix moduele!!
 
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import sys
-sys.path.insert(0,'/var/lib/zabbix')
+sys.path.insert(0,'/home/zabbix')
 
 # pip install config
 import config
@@ -61,6 +62,8 @@ for line in reader:
        except Exception as tid:
         print("Temnplate:",one_template,"does not exist")
 
+     # add additional groups
+     if len(groups)>1:
       for one_hostgroup in groups[1:]:
        try:
         gid=zapi.hostgroup.get({"filter" : {"name" : one_hostgroup}})[0]['groupid']
