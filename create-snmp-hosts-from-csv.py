@@ -2,27 +2,33 @@
 # import hosts from txt file to Zabbix via API
 # and assign template and host group to them
 import csv
-from zabbix_api import ZabbixAPI
+
+# pip install pyzabbix
+from pyzabbix import ZabbixAPI
+
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import sys
-sys.path.insert(0,'/home/zabbix')
+sys.path.insert(0,'/var/lib/zabbix')
+
+# pip install config
 import config
 ZABBIX_SERVER = config.url
 zapi = ZabbixAPI(ZABBIX_SERVER)
+zapi.session.verify=False
 zapi.login(config.username, config.password)
 
-file = open("input.csv",'rb')
+file = open("hostlist.csv",'rb')
 reader = csv.DictReader( file )
 
 # take the file and read line by line
 for line in reader:
  
  # check if this host exists in zabbix
- #result = zapi.host.get({"filter":{"host" :line['name']}}) 
  if not zapi.host.get({"filter":{"host" :line['name']}}):
   print line['name'],"not yet registred"
   if zapi.proxy.get({"output": "proxyid","selectInterface": "extend","filter":{"host":line['proxy']}}):
-   #print line['proxy'],"is in the instance"
    proxy_id=zapi.proxy.get({"output": "proxyid","selectInterface": "extend","filter":{"host":line['proxy']}})[0]['proxyid']
    if proxy_id>0:
      templates=line['template'].split(";")
