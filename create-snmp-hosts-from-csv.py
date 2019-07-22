@@ -3,8 +3,8 @@
 # and assign template and host group to them
 import csv
 
-# pip install pyzabbix
-from pyzabbix import ZabbixAPI
+from zabbix_api import ZabbixAPI
+# IT WILL NOT WORK IF YOU USE pyzabbix moduele!!
 
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
