@@ -51,6 +51,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
 /etc/httpd \
 /etc/my.cnf.d \
 /etc/yum.repos.d \
+/usr/share/snmp/mibs \
 /etc/crontab \
 /etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)

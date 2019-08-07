@@ -4,6 +4,8 @@ Shows a list of all current issues (AKA tripped triggers)
 """
 
 from pyzabbix import ZabbixAPI
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 #import credentials from external file
 import sys
@@ -14,6 +16,7 @@ import config
 ZABBIX_SERVER = config.url
 
 zapi = ZabbixAPI(ZABBIX_SERVER)
+zapi.session.verify=False
 
 # Login to the Zabbix API
 zapi.login(config.username, config.password)
