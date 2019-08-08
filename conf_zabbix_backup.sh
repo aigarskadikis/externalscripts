@@ -47,7 +47,10 @@ mysqldump \
 --ignore-table=zabbix.event_recovery \
 zabbix | gzip --best > $dest/db.conf.zabbix.gz
 
-# backup importand directories and files. last line search what is home direcotry for user 'zabbix'
+echo list installed packages
+yum list installed > $dest/yum.list.installed.log
+
+echo archiving importand directories and files
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/zabbix \
 /usr/lib/zabbix \
