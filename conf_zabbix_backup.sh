@@ -50,7 +50,7 @@ zabbix | gzip --best > $dest/db.conf.zabbix.gz
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log
 
-echo archiving importand directories and files
+echo archiving important directories and files
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/zabbix \
 /usr/lib/zabbix \
@@ -63,6 +63,8 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/snmp/snmptrapd.conf \
 /usr/bin/zabbix_trap_receiver.pl \
 /etc/snmp/snmpd.conf \
+/etc/odbcinst.ini \
+/etc/odbc.ini \
 /etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
