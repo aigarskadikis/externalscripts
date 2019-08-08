@@ -1,4 +1,7 @@
 #!/bin/env python
+# yum install python-pip
+# pip install pyzabbix
+# pip install config
 from pyzabbix import ZabbixAPI
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
