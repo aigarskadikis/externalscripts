@@ -3,6 +3,7 @@
 # add a dedicated linux user
 # groupadd zbxbackupuser
 # useradd -g zbxbackupuser -s /bin/bash zbxbackupuser
+# usermod -a -G zabbix zbxbackupuser
 
 # allow this user to pick up any file from system with sudo command
 # echo "zbxbackupuser        ALL=(ALL)       NOPASSWD: ALL"> /etc/sudoers.d/010_zbx-backup-user
