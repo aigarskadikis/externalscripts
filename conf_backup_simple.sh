@@ -12,6 +12,10 @@
 # echo -e "[client]\nuser=zbxbackupuser\npassword=zabbix" > .my.cnf
 # chmod 600 .my.cnf
 
+# grant all privileges on zabbix.* to "zbxbackupuser"@"localhost" identified by "zabbix";
+# grant RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT on *.* to "zbxbackupuser"@"localhost" identified by "zabbix";
+
+
 day=$(date +%Y%m%d)
 clock=$(date +%H%M)
 dest=~/zabbix_backup
