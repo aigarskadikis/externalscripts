@@ -8,6 +8,9 @@
 # ALTER TABLE `history_str` PARTITION BY RANGE(clock)(PARTITION p2018_12_11 VALUES LESS THAN (UNIX_TIMESTAMP("2018-12-12 00:00:00")) ENGINE=InnoDB);
 # ALTER TABLE `trends` PARTITION BY RANGE(clock)(PARTITION p2018_12_11 VALUES LESS THAN (UNIX_TIMESTAMP("2018-12-12 00:00:00")) ENGINE=InnoDB);
 # ALTER TABLE `trends_uint` PARTITION BY RANGE(clock)(PARTITION p2018_12_11 VALUES LESS THAN (UNIX_TIMESTAMP("2018-12-12 00:00:00")) ENGINE=InnoDB);
+# groupadd zbx_part
+# useradd -g zbx_part -s /bin/bash zbx_part
+# usermod -a -G zabbix zbx_part
 
 use strict;
 use Data::Dumper;

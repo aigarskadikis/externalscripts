@@ -60,6 +60,9 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /usr/share/snmp/mibs \
 /etc/letsencrypt \
 /etc/crontab \
+/etc/snmp/snmptrapd.conf \
+/usr/bin/zabbix_trap_receiver.pl \
+/etc/snmp/snmpd.conf \
 /etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
