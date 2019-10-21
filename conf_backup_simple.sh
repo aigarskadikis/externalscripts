@@ -33,7 +33,6 @@ mysqldump \
 --ignore-table=zabbix.alerts \
 --ignore-table=zabbix.auditlog \
 --ignore-table=zabbix.auditlog_details \
---ignore-table=zabbix.escalations \
 --ignore-table=zabbix.events \
 --ignore-table=zabbix.history \
 --ignore-table=zabbix.history_log \

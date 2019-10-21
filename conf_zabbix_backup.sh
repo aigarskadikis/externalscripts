@@ -31,7 +31,6 @@ mysqldump \
 --ignore-table=zabbix.alerts \
 --ignore-table=zabbix.auditlog \
 --ignore-table=zabbix.auditlog_details \
---ignore-table=zabbix.escalations \
 --ignore-table=zabbix.events \
 --ignore-table=zabbix.history \
 --ignore-table=zabbix.history_log \
@@ -65,6 +64,8 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/snmp/snmpd.conf \
 /etc/odbcinst.ini \
 /etc/odbc.ini \
+/usr/bin/zram.sh \
+/etc/rc.local \
 /etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
