@@ -61,6 +61,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/crontab \
 /etc/snmp/snmptrapd.conf \
 /usr/bin/zabbix_trap_receiver.pl \
+/etc/security/limits.conf \
 /etc/snmp/snmpd.conf \
 /etc/odbcinst.ini \
 /etc/odbc.ini \
