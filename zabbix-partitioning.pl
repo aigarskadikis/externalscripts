@@ -25,13 +25,13 @@ my $db_schema = 'zabbix';
 my $dsn = 'DBI:mysql:'.$db_schema.':mysql_socket=/var/lib/mysql/mysql.sock';
 my $db_user_name = 'zabbix_part';
 my $db_password = 'dwyQv5X3G6WwtYKg';
-my $tables = {	'history' => { 'period' => 'day', 'keep_history' => '5'},
-		'history_log' => { 'period' => 'day', 'keep_history' => '5'},
-		'history_str' => { 'period' => 'day', 'keep_history' => '5'},
-		'history_text' => { 'period' => 'day', 'keep_history' => '5'},
-		'history_uint' => { 'period' => 'day', 'keep_history' => '5'},
-		'trends' => { 'period' => 'month', 'keep_history' => '6'},
-		'trends_uint' => { 'period' => 'month', 'keep_history' => '6'}
+my $tables = {	'history' => { 'period' => 'day', 'keep_history' => '3'},
+		'history_log' => { 'period' => 'day', 'keep_history' => '3'},
+		'history_str' => { 'period' => 'day', 'keep_history' => '3'},
+		'history_text' => { 'period' => 'day', 'keep_history' => '3'},
+		'history_uint' => { 'period' => 'day', 'keep_history' => '3'},
+		'trends' => { 'period' => 'month', 'keep_history' => '2'},
+		'trends_uint' => { 'period' => 'month', 'keep_history' => '2'}
 		};
 my $amount_partitions = 2;
 
