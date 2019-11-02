@@ -57,6 +57,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/my.cnf.d \
 /etc/yum.repos.d \
 /usr/share/snmp/mibs \
+/etc/sysconfig \
 /etc/letsencrypt \
 /etc/crontab \
 /etc/snmp/snmptrapd.conf \
