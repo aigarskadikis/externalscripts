@@ -57,6 +57,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/nginx \
 /etc/my.cnf.d \
 /etc/yum.repos.d \
+/etc/sudoers.d \
 /usr/share/snmp/mibs \
 /etc/sysconfig \
 /etc/letsencrypt \
@@ -68,7 +69,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/snmp/snmpd.conf \
 /etc/odbcinst.ini \
 /etc/odbc.ini \
-/usr/bin/zram.sh \
+/etc/sudoers \
 /etc/rc.local \
 /etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)
