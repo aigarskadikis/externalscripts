@@ -69,6 +69,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/snmp/snmpd.conf \
 /etc/odbcinst.ini \
 /etc/odbc.ini \
+/usr/bin/frontend-version-change \
 /etc/sudoers \
 /etc/rc.local \
 /etc/zabbix/web/zabbix.conf.php \

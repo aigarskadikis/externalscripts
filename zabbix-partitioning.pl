@@ -28,10 +28,10 @@ my $db_password = 'dwyQv5X3G6WwtYKg';
 my $tables = {	'history' => { 'period' => 'day', 'keep_history' => '1'},
 		'history_log' => { 'period' => 'day', 'keep_history' => '1'},
 		'history_str' => { 'period' => 'day', 'keep_history' => '1'},
-		'history_text' => { 'period' => 'day', 'keep_history' => '21'},
+		'history_text' => { 'period' => 'day', 'keep_history' => '10'},
 		'history_uint' => { 'period' => 'day', 'keep_history' => '1'},
-		'trends' => { 'period' => 'month', 'keep_history' => '1'},
-		'trends_uint' => { 'period' => 'month', 'keep_history' => '1'}
+		'trends' => { 'period' => 'month', 'keep_history' => '2'},
+		'trends_uint' => { 'period' => 'month', 'keep_history' => '2'}
 		};
 my $amount_partitions = 2;
 
