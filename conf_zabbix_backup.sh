@@ -70,6 +70,8 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/odbcinst.ini \
 /etc/odbc.ini \
 /usr/bin/frontend-version-change \
+/usr/share/grafana \
+/etc/grafana/grafana.ini \
 /etc/sudoers \
 /etc/rc.local \
 /etc/zabbix/web/zabbix.conf.php \
