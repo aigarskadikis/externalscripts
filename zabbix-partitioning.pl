@@ -27,7 +27,7 @@ my $db_user_name = 'zabbix_part';
 my $db_password = 'dwyQv5X3G6WwtYKg';
 my $tables = {	'history' => { 'period' => 'day', 'keep_history' => '1'},
 		'history_log' => { 'period' => 'day', 'keep_history' => '1'},
-		'history_str' => { 'period' => 'day', 'keep_history' => '1'},
+		'history_str' => { 'period' => 'day', 'keep_history' => '10'},
 		'history_text' => { 'period' => 'day', 'keep_history' => '10'},
 		'history_uint' => { 'period' => 'day', 'keep_history' => '1'},
 		'trends' => { 'period' => 'month', 'keep_history' => '2'},
