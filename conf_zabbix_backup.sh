@@ -67,6 +67,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/security/limits.conf \
 /etc/sysctl.conf \
 /etc/snmp/snmpd.conf \
+/usr/bin/postbody.py \
 /etc/odbcinst.ini \
 /etc/odbc.ini \
 /usr/bin/frontend-version-change \
@@ -74,6 +75,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/grafana/grafana.ini \
 /etc/sudoers \
 /etc/rc.local \
+/var/lib/pgsql/10/data/pg_hba.conf \
 /etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
