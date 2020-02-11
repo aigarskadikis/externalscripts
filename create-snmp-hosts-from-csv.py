@@ -11,7 +11,7 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import sys
-sys.path.insert(0,'/home/zabbix')
+sys.path.insert(0,'/var/lib/zabbix')
 
 # pip install config
 import config
