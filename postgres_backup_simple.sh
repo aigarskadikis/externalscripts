@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# usermod -a -G zabbix postgres
+
 day=$(date +%Y%m%d)
 clock=$(date +%H%M)
 dest=~/10/backups/$day/$clock
