@@ -16,6 +16,7 @@
 # grant all privileges on zabbix.* to "zbxbackupuser"@"localhost" identified by "zabbix";
 # grant RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT on *.* to "zbxbackupuser"@"localhost" identified by "zabbix";
 
+# echo "51 */3 * * * zbxbackupuser /usr/lib/zabbix/externalscripts/full_zabbix_backup.sh" | sudo tee -a /etc/crontab
 
 day=$(date +%Y%m%d)
 clock=$(date +%H%M)
