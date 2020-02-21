@@ -54,7 +54,9 @@ sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
 /etc/zabbix \
 /usr/lib/zabbix \
 /etc/httpd \
+/etc/nginx \
 /etc/my.cnf.d \
+/etc/php-fpm.d \
 /etc/yum.repos.d \
 /usr/share/snmp/mibs \
 /etc/crontab \
