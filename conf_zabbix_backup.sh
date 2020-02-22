@@ -44,7 +44,7 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | gzip --best > $dest/db.conf.zabbix.gz
+zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
 
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log

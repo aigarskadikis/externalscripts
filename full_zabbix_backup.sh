@@ -27,22 +27,46 @@ mysqldump \
 --flush-logs \
 --single-transaction \
 --create-options \
-zabbix | gzip --best > $dest/db.full.zabbix.gz
+zabbix | gzip --best > $dest/db.full.zabbix.sql.gz
 
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log
 
 echo archiving important directories and files
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
-/etc/zabbix \
-/usr/lib/zabbix \
-/etc/httpd \
-/etc/my.cnf.d \
-/etc/yum.repos.d \
-/usr/share/snmp/mibs \
-/etc/letsencrypt \
 /etc/crontab \
-/etc/zabbix/web/zabbix.conf.php \
+/etc/grafana/grafana.ini \
+/etc/httpd \
+/etc/letsencrypt \
+/etc/my.cnf.d \
+/etc/nginx \
+/etc/odbc.ini \
+/etc/odbcinst.ini \
+/etc/openldap \
+/etc/php-fpm.d \
+/etc/rc.local \
+/etc/security/limits.conf \
+/etc/snmp/snmpd.conf \
+/etc/snmp/snmptrapd.conf \
+/etc/sudoers \
+/etc/sudoers.d \
+/etc/sysconfig \
+/etc/systemd/system/mariadb.service.d \
+/etc/systemd/system/nginx.service.d \
+/etc/systemd/system/php-fpm.service.d \
+/etc/systemd/system/zabbix-agent.service.d \
+/etc/systemd/system/zabbix-agent2.service.d \
+/etc/systemd/system/zabbix-server.service.d \
+/etc/sysctl.conf \
+/etc/yum.repos.d \
+/etc/zabbix \
+/usr/bin/frontend-version-change \
+/usr/bin/postbody.py \
+/usr/bin/zabbix_trap_receiver.pl \
+/usr/lib/zabbix \
+/usr/share/grafana \
+/usr/share/snmp/mibs \
+/var/lib/pgsql/10/data/pg_hba.conf \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then

@@ -47,7 +47,7 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | gzip --best > $dest/db.conf.zabbix.$day.$clock.gz
+zabbix | gzip --best > $dest/db.conf.zabbix.$day.$clock.sql.gz
 
 # backup importand directories and files. last line search what is home direcotry for user 'zabbix'
 sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
