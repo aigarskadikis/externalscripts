@@ -51,35 +51,40 @@ yum list installed > $dest/yum.list.installed.log
 
 echo archiving important directories and files
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
-/etc/zabbix \
-/usr/lib/zabbix \
-/etc/httpd \
-/etc/nginx \
-/etc/my.cnf.d \
-/etc/yum.repos.d \
-/etc/sudoers.d \
-/usr/share/snmp/mibs \
-/etc/openldap \
-/etc/sysconfig \
-/etc/letsencrypt \
 /etc/crontab \
-/etc/snmp/snmptrapd.conf \
-/usr/bin/zabbix_trap_receiver.pl \
-/etc/security/limits.conf \
-/etc/sysctl.conf \
-/etc/snmp/snmpd.conf \
-/usr/bin/postbody.py \
-/etc/odbcinst.ini \
-/etc/odbc.ini \
-/usr/bin/frontend-version-change \
-/usr/share/grafana \
 /etc/grafana/grafana.ini \
-/etc/sudoers \
+/etc/httpd \
+/etc/letsencrypt \
+/etc/my.cnf.d \
+/etc/nginx \
+/etc/odbc.ini \
+/etc/odbcinst.ini \
+/etc/openldap \
+/etc/php-fpm.d \
 /etc/rc.local \
+/etc/security/limits.conf \
+/etc/snmp/snmpd.conf \
+/etc/snmp/snmptrapd.conf \
+/etc/sudoers \
+/etc/sudoers.d \
+/etc/sysconfig \
+/etc/systemd/system/mariadb.service.d \
+/etc/systemd/system/nginx.service.d \
+/etc/systemd/system/php-fpm.service.d \
+/etc/systemd/system/zabbix-agent.service.d \
+/etc/systemd/system/zabbix-agent2.service.d \
+/etc/systemd/system/zabbix-server.service.d \
+/etc/sysctl.conf \
+/etc/yum.repos.d \
+/etc/zabbix \
+/usr/bin/frontend-version-change \
+/usr/bin/postbody.py \
+/usr/bin/zabbix_trap_receiver.pl \
+/usr/lib/zabbix \
+/usr/share/grafana \
+/usr/share/snmp/mibs \
 /var/lib/pgsql/10/data/pg_hba.conf \
-/etc/zabbix/web/zabbix.conf.php \
 $(grep zabbix /etc/passwd|cut -d: -f6)
-
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
