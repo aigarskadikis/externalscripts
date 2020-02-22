@@ -53,11 +53,16 @@ zabbix | gzip --best > $dest/db.conf.zabbix.$day.$clock.gz
 sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
 /etc/zabbix \
 /usr/lib/zabbix \
-/etc/httpd \
 /etc/nginx \
 /etc/my.cnf.d \
 /etc/php-fpm.d \
 /etc/yum.repos.d \
+/etc/systemd/system/zabbix-server.service.d \
+/etc/systemd/system/zabbix-agent2.service.d \
+/etc/systemd/system/zabbix-agent.service.d \
+/etc/systemd/system/nginx.service.d \
+/etc/systemd/system/php-fpm.service.d \
+/etc/systemd/system/mariadb.service.d \
 /usr/share/snmp/mibs \
 /etc/crontab \
 /etc/snmp/snmptrapd.conf \

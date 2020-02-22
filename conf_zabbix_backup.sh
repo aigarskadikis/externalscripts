@@ -59,6 +59,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/yum.repos.d \
 /etc/sudoers.d \
 /usr/share/snmp/mibs \
+/etc/openldap \
 /etc/sysconfig \
 /etc/letsencrypt \
 /etc/crontab \
