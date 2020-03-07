@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# mysqldump: Couldn't execute 'FLUSH TABLES': Access denied; you need (at least one of) the RELOAD privilege(s) for this operation (1227)
+# grant RELOAD, LOCK TABLES, PROCESS, REPLICATION CLIENT on *.* to 'zbx_backup'@'localhost' identified by 'your-password';
+
 # zabbix server or zabbix proxy for zabbix sender
 contact=127.0.0.1
 
@@ -13,17 +16,9 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-echo backup partitions for the 7 biggest tables
-mysql zabbix <<<'show create table history\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`history\`|"|sed "s|$|;\n|"> $dest/create.historical.partitions.sql
-mysql zabbix <<<'show create table history_log\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`history_log\`|"|sed "s|$|;\n|">> $dest/create.historical.partitions.sql
-mysql zabbix <<<'show create table history_str\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`history_str\`|"|sed "s|$|;\n|">> $dest/create.historical.partitions.sql
-mysql zabbix <<<'show create table history_text\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`history_text\`|"|sed "s|$|;\n|">> $dest/create.historical.partitions.sql
-mysql zabbix <<<'show create table history_uint\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`history_uint\`|"|sed "s|$|;\n|">> $dest/create.historical.partitions.sql
-mysql zabbix <<<'show create table trends\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`trends\`|"|sed "s|$|;\n|">> $dest/create.historical.partitions.sql
-mysql zabbix <<<'show create table trends_uint\G;'|grep PARTITION|tr -cd "[:print:]"|sed "s|^|ALTER TABLE \`trends_uint\`|"|sed "s|$|;\n|">> $dest/create.historical.partitions.sql
-
 echo backuping pure configuration
 mysqldump \
+--set-gtid-purged=OFF \
 --flush-logs \
 --single-transaction \
 --create-options \
@@ -84,6 +79,11 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /usr/share/grafana \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/10/data/pg_hba.conf \
+/usr/bin/reboo_sequence \
+/etc/sysconfig/zabbix-agent2 \
+/etc/sysconfig/zabbix-agent \
+/etc/sysconfig/zabbix-proxy \
+/etc/sysconfig/zabbix-server \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
