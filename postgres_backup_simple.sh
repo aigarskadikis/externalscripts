@@ -10,12 +10,12 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-databases2backup=$(psql -t -c "SELECT datname FROM pg_database" | awk '$1=$1' | grep "^z.*")
+databases2backup=$(psql --host=pg --username=root --list | awk '$1=$1' | grep "^z.*")
 
 echo "$databases2backup" | while IFS= read -r db
 do {
 echo "$db"
-pg_dump -h pg -U root $db | gzip --best > $dest/$db.sql.gz
+pg_dump --host=pg --username=root $db | gzip --best > $dest/$db.sql.gz
 } done
 
 rclone --delete-empty-src-dirs -vv move ~/10/backups ZabbixBackupPostgreSQL:ZabbixBackupPostgreSQL
