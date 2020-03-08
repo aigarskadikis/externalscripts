@@ -15,7 +15,7 @@ databases2backup=$(psql -t -c "SELECT datname FROM pg_database" | awk '$1=$1' | 
 echo "$databases2backup" | while IFS= read -r db
 do {
 echo "$db"
-pg_dump $db | gzip --best > $dest/$db.sql.gz
+pg_dump -h pg -U root $db | gzip --best > $dest/$db.sql.gz
 } done
 
 rclone --delete-empty-src-dirs -vv move ~/10/backups ZabbixBackupPostgreSQL:ZabbixBackupPostgreSQL
