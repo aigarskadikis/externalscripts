@@ -10,7 +10,7 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-databases2backup=$(psql --host=pg --username=root --list | awk '$1=$1' | grep "^z.*")
+databases2backup=$(psql --host=pg --username=root --list -t | awk '{print $1}' | grep -o -E "^[0-9a-zA-Z_-]\+")
 
 echo "$databases2backup" | while IFS= read -r db
 do {
