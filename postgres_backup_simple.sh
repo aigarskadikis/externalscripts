@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# cat /var/lib/pgsql/.pgpass
+# pg:5432:*:postgres:zabbix
+# pg:5432:*:zabbix:zabbix
+
 # usermod -a -G zabbix postgres
 
 day=$(date +%Y%m%d)
