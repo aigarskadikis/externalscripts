@@ -62,11 +62,12 @@ $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana \
 /etc/cron.d \
 /etc/letsencrypt \
-/etc/nginx \
+/etc/nginx/conf.d \
+/etc/nginx/nginx.conf \
 /etc/odbc.ini \
+/etc/selinux/config \
 /etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
-/etc/php-fpm.d \
 /etc/security/limits.conf \
 /etc/snmp/snmptrapd.conf \
 /etc/sudoers.d \
