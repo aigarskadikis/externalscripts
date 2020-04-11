@@ -65,10 +65,10 @@ $grafana/var/lib/grafana \
 /etc/nginx/conf.d \
 /etc/nginx/nginx.conf \
 /etc/odbc.ini \
-/etc/selinux/config \
 /etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
 /etc/security/limits.conf \
+/etc/selinux/config \
 /etc/snmp/snmptrapd.conf \
 /etc/sudoers.d \
 /etc/sysconfig/zabbix-agent \

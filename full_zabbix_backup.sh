@@ -30,40 +30,40 @@ grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 echo archiving important directories and files
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
-/etc/crontab \
-/etc/grafana/grafana.ini \
-/etc/httpd \
+$(grep zabbix /etc/passwd|cut -d: -f6) \
+$grafana/var/lib/grafana \
+/etc/cron.d \
 /etc/letsencrypt \
-/etc/my.cnf.d \
-/etc/nginx \
+/etc/nginx/conf.d \
+/etc/nginx/nginx.conf \
 /etc/odbc.ini \
 /etc/odbcinst.ini \
-/etc/openldap \
-/etc/php-fpm.d \
+/etc/openldap/ldap.conf \
 /etc/security/limits.conf \
-/etc/snmp/snmpd.conf \
+/etc/selinux/config \
 /etc/snmp/snmptrapd.conf \
-/etc/sudoers \
 /etc/sudoers.d \
-/etc/sysconfig \
-/etc/systemd/system/mariadb.service.d \
+/etc/sysconfig/zabbix-agent \
+/etc/sysconfig/zabbix-server \
+/etc/sysctl.conf \
 /etc/systemd/system/nginx.service.d \
 /etc/systemd/system/php-fpm.service.d \
 /etc/systemd/system/zabbix-agent.service.d \
-/etc/systemd/system/zabbix-agent2.service.d \
 /etc/systemd/system/zabbix-server.service.d \
-/etc/sysctl.conf \
 /etc/yum.repos.d \
 /etc/zabbix \
-/usr/bin/frontend-version-change \
-/usr/bin/postbody.py \
+/home/zbxbackupuser/.config/rclone/rclone.conf \
+/root/.bashrc \
+/root/.gitconfig \
+/root/.my.cnf \
+/root/.ssh \
+/root/.vimrc \
+/root/bin \
 /usr/bin/zabbix_trap_receiver.pl \
 /usr/lib/zabbix \
-$grafana/var/lib/grafana \
 /usr/share/snmp/mibs \
-/var/lib/pgsql/10/data/pg_hba.conf \
-/etc/cron.d \
-$(grep zabbix /etc/passwd|cut -d: -f6)
+/var/lib/pgsql/.config/rclone/rclone.conf \
+/var/lib/pgsql/.pgpass
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 #/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
