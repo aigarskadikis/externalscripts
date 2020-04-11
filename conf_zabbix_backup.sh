@@ -56,7 +56,6 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/odbcinst.ini \
 /etc/openldap \
 /etc/php-fpm.d \
-/etc/rc.local \
 /etc/security/limits.conf \
 /etc/snmp/snmpd.conf \
 /etc/snmp/snmptrapd.conf \
