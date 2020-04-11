@@ -41,56 +41,6 @@ mysqldump \
 --ignore-table=zabbix.event_recovery \
 zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
 
-echo list installed packages
-yum list installed > $dest/yum.list.installed.log
-
-# grafana container dir
-grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
-
-
-echo archiving important directories and files
-sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
-/etc/crontab \
-/etc/httpd \
-/etc/letsencrypt \
-/etc/my.cnf.d \
-/etc/nginx \
-/etc/odbc.ini \
-/etc/odbcinst.ini \
-/etc/openldap \
-/etc/php-fpm.d \
-/etc/security/limits.conf \
-/etc/snmp/snmpd.conf \
-/etc/snmp/snmptrapd.conf \
-/etc/sudoers \
-/etc/sudoers.d \
-/etc/sysconfig \
-/etc/systemd/system/mariadb.service.d \
-/etc/systemd/system/nginx.service.d \
-/etc/systemd/system/php-fpm.service.d \
-/etc/systemd/system/zabbix-agent.service.d \
-/etc/systemd/system/zabbix-agent2.service.d \
-/etc/systemd/system/zabbix-server.service.d \
-/etc/sysctl.conf \
-/etc/yum.repos.d \
-/etc/zabbix \
-/usr/bin/frontend-version-change \
-/usr/bin/postbody.py \
-/usr/bin/zabbix_trap_receiver.pl \
-/usr/lib/zabbix \
-$grafana/var/lib/grafana \
-/usr/share/snmp/mibs \
-/var/lib/pgsql/10/data/pg_hba.conf \
-/usr/bin/reboo_sequence \
-/etc/sysconfig/zabbix-agent2 \
-/etc/sysconfig/zabbix-agent \
-/etc/sysconfig/zabbix-proxy \
-/etc/sysconfig/zabbix-server \
-/var/lib/pgsql/.config/rclone \
-/var/lib/pgsql/.pgpass \
-/etc/cron.d \
-$(grep zabbix /etc/passwd|cut -d: -f6)
-
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 echo "mysqldump executed with error !!"
@@ -100,4 +50,47 @@ echo content of $dest
 ls -lh $dest
 fi
 
+echo list installed packages
+yum list installed > $dest/yum.list.installed.log
+
+# grafana container dir
+grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
+
+echo archiving important directories and files
+sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
+$(grep zabbix /etc/passwd|cut -d: -f6) \
+$grafana/var/lib/grafana \
+/etc/cron.d \
+/etc/letsencrypt \
+/etc/nginx \
+/etc/odbc.ini \
+/etc/odbcinst.ini \
+/etc/openldap/ldap.conf \
+/etc/php-fpm.d \
+/etc/security/limits.conf \
+/etc/snmp/snmptrapd.conf \
+/etc/sudoers.d \
+/etc/sysconfig/zabbix-agent \
+/etc/sysconfig/zabbix-server \
+/etc/sysctl.conf \
+/etc/systemd/system/nginx.service.d \
+/etc/systemd/system/php-fpm.service.d \
+/etc/systemd/system/zabbix-agent.service.d \
+/etc/systemd/system/zabbix-server.service.d \
+/etc/yum.repos.d \
+/etc/zabbix \
+/home/zbxbackupuser/.config/rclone/rclone.conf \
+/root/.bashrc \
+/root/.gitconfig \
+/root/.my.cnf \
+/root/.ssh \
+/root/.vimrc \
+/root/bin \
+/usr/bin/zabbix_trap_receiver.pl \
+/usr/lib/zabbix \
+/usr/share/snmp/mibs \
+/var/lib/pgsql/.config/rclone/rclone.conf \
+/var/lib/pgsql/.pgpass
+
+echo uploading files to google drive
 rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup zabbixbackup:zabbix-DB-backup
