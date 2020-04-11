@@ -44,10 +44,13 @@ zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log
 
+# grafana container dir
+grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
+
+
 echo archiving important directories and files
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/crontab \
-/etc/grafana/grafana.ini \
 /etc/httpd \
 /etc/letsencrypt \
 /etc/my.cnf.d \
@@ -75,7 +78,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /usr/bin/postbody.py \
 /usr/bin/zabbix_trap_receiver.pl \
 /usr/lib/zabbix \
-/usr/share/grafana \
+$grafana/var/lib/grafana \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/10/data/pg_hba.conf \
 /usr/bin/reboo_sequence \
