@@ -84,6 +84,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
 /usr/share/grafana \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/10/data/pg_hba.conf \
+/etc/cron.d \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
 

@@ -86,6 +86,7 @@ sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 /etc/sysconfig/zabbix-server \
 /var/lib/pgsql/.config/rclone \
 /var/lib/pgsql/.pgpass \
+/etc/cron.d \
 $(grep zabbix /etc/passwd|cut -d: -f6)
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
