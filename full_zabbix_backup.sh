@@ -20,7 +20,7 @@ mysqldump \
 --flush-logs \
 --single-transaction \
 --create-options \
-zabbix | gzip --best > $dest/db.full.zabbix.sql.gz
+zabbix | xz -9 > $dest/db.full.zabbix.sql.xz
 
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log
