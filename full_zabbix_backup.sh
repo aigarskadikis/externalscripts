@@ -1,10 +1,10 @@
 #!/bin/bash
 
 # zabbix server or zabbix proxy for zabbix sender
-#contact=127.0.0.1
+contact=127.0.0.1
 
 # initialize startup message. 1 - backup is started
-#/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 
 year=$(date +%Y)
 month=$(date +%m)
@@ -22,6 +22,15 @@ mysqldump \
 --create-options \
 zabbix | xz -9 > $dest/db.full.zabbix.sql.xz
 
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+echo "mysqldump executed with error !!"
+else
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
+echo content of $dest
+ls -lh $dest
+fi
+
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log
 
@@ -36,15 +45,12 @@ $grafana/var/lib/grafana \
 /etc/letsencrypt \
 /etc/nginx/conf.d \
 /etc/nginx/nginx.conf \
-/etc/odbc.ini \
-/etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
 /etc/security/limits.conf \
 /etc/selinux/config \
 /etc/snmp/snmptrapd.conf \
 /etc/sudoers.d \
 /etc/sysconfig/zabbix-agent \
-/etc/sysconfig/zabbix-server \
 /etc/sysctl.conf \
 /etc/systemd/system/nginx.service.d \
 /etc/systemd/system/php-fpm.service.d \
@@ -63,15 +69,8 @@ $grafana/var/lib/grafana \
 /usr/lib/zabbix \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/.config/rclone/rclone.conf \
-/var/lib/pgsql/.pgpass
+/var/lib/pgsql/.pgpass > /dev/null
 
-if [ ${PIPESTATUS[0]} -ne 0 ]; then
-#/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
-echo "mysqldump executed with error !!"
-else
-#/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
-echo content of $dest
-ls -lh $dest
-fi
+echo uploading files to google drive
+rclone move ~/zabbix_backup zabbixbackup:zabbix-DB-backup --delete-empty-src-dirs -v
 
-rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup zabbixbackup:zabbix-DB-backup
