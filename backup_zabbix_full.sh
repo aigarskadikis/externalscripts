@@ -20,7 +20,7 @@ mysqldump \
 --flush-logs \
 --single-transaction \
 --create-options \
-zabbix | xz -9 > $dest/db.full.zabbix.sql.xz
+zabbix | gzip --best > $dest/db.full.zabbix.sql.gz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1

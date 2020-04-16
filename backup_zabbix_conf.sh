@@ -24,7 +24,7 @@ mysqldump \
 --single-transaction \
 --create-options \
 --no-data \
-zabbix | xz -9 > $dest/db.schema.zabbix.sql.xz
+zabbix | gzip --best > $dest/db.schema.zabbix.sql.gz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
@@ -58,7 +58,7 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | xz -9 > $dest/db.conf.zabbix.sql.xz
+zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
@@ -76,7 +76,7 @@ yum list installed > $dest/yum.list.installed.log
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 echo archiving important directories and files
-sudo tar -xJf $dest/fs.conf.zabbix.tar.xz \
+sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana \
 /etc/cron.d \
