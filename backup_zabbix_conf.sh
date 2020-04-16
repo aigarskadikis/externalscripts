@@ -9,9 +9,11 @@ contact=127.0.0.1
 # initialize startup message. 1 - backup is started
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 
-day=$(date +%Y%m%d)
+year=$(date +%Y)
+month=$(date +%m)
+day=$(date +%d)
 clock=$(date +%H%M)
-dest=~/zabbix_backup/$day/$clock
+dest=~/zabbix_backup/$year/$month/$day/$clock
 if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
@@ -74,7 +76,7 @@ yum list installed > $dest/yum.list.installed.log
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 echo archiving important directories and files
-sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
+sudo tar -xJf $dest/fs.conf.zabbix.tar.xz \
 $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana \
 /etc/cron.d \
