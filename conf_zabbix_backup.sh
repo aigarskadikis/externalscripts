@@ -16,6 +16,23 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
+echo backuping schema
+mysqldump \
+--flush-logs \
+--single-transaction \
+--create-options \
+--no-data \
+zabbix | xz -9 > $dest/db.schema.zabbix.sql.xz
+
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+echo "mysqldump executed with error !!"
+else
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
+echo content of $dest
+ls -lh $dest
+fi
+
 echo backuping pure configuration
 mysqldump \
 --set-gtid-purged=OFF \
@@ -39,7 +56,7 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
+zabbix | xz -9 > $dest/db.conf.zabbix.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
