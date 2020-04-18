@@ -9,6 +9,8 @@ contact=127.0.0.1
 # initialize startup message. 1 - backup is started
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 
+sleep 1
+
 year=$(date +%Y)
 month=$(date +%m)
 day=$(date +%d)
@@ -35,7 +37,10 @@ echo content of $dest
 ls -lh $dest
 fi
 
+sleep 1
 echo backuping pure configuration
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
+
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -61,7 +66,7 @@ mysqldump \
 zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
 echo "mysqldump executed with error !!"
 else
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
@@ -75,7 +80,10 @@ yum list installed > $dest/yum.list.installed.log
 # grafana container dir
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
+sleep 1
 echo archiving important directories and files
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
+
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana \
@@ -112,5 +120,11 @@ $grafana/var/lib/grafana \
 /var/lib/pgsql/.config/rclone/rclone.conf \
 /var/lib/pgsql/.pgpass
 
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
+
 echo uploading files to google drive
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 5
 rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup zabbixbackup:zabbix-DB-backup
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
+
