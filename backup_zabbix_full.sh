@@ -38,6 +38,8 @@ yum list installed > $dest/yum.list.installed.log
 # grafana container dir
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
+sleep 1
+
 echo archiving important directories and files
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
@@ -74,6 +76,8 @@ $grafana/var/lib/grafana \
 /var/lib/pgsql/.pgpass > /dev/null
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
+
+sleep 1
 
 echo uploading files to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 5

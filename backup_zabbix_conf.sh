@@ -26,7 +26,7 @@ mysqldump \
 --single-transaction \
 --create-options \
 --no-data \
-zabbix | gzip --best > $dest/db.schema.zabbix.sql.gz
+zabbix | xz > $dest/db.schema.zabbix.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
@@ -45,7 +45,7 @@ mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
 --single-transaction \
---create-options \
+--no-create-info \
 --ignore-table=zabbix.acknowledges \
 --ignore-table=zabbix.alerts \
 --ignore-table=zabbix.auditlog \
@@ -63,7 +63,7 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | gzip --best > $dest/db.conf.zabbix.sql.gz
+zabbix | xz > $dest/db.conf.zabbix.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
@@ -84,7 +84,8 @@ sleep 1
 echo archiving important directories and files
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
 
-sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
+# sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
+sudo tar -cJf $dest/fs.conf.zabbix.tar.xz \
 $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana \
 /etc/cron.d \
