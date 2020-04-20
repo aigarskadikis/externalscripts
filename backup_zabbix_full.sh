@@ -3,8 +3,8 @@
 # zabbix server or zabbix proxy for zabbix sender
 contact=127.0.0.1
 
-# initialize startup message. 1 - backup is started
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+# initialize startup message. 3 - full backup is started
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 3
 
 year=$(date +%Y)
 month=$(date +%m)
@@ -16,14 +16,15 @@ if [ ! -d "$dest" ]; then
 fi
 
 echo backuping full instance
+# do not use highest compression 'zx -9'! it will not work because of low memory
 mysqldump \
 --flush-logs \
 --single-transaction \
 --create-options \
-zabbix | gzip --best > $dest/db.full.zabbix.sql.gz
+zabbix | xz > $dest/db.full.zabbix.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 3
 echo "mysqldump executed with error !!"
 else
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
@@ -38,6 +39,7 @@ yum list installed > $dest/yum.list.installed.log
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 echo archiving important directories and files
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
 sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana \
@@ -71,6 +73,9 @@ $grafana/var/lib/grafana \
 /var/lib/pgsql/.config/rclone/rclone.conf \
 /var/lib/pgsql/.pgpass > /dev/null
 
-echo uploading files to google drive
-rclone move ~/zabbix_backup zabbixbackup:zabbix-DB-backup --delete-empty-src-dirs -v
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
 
+echo uploading files to google drive
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 5
+rclone move ~/zabbix_backup zabbixbackup:zabbix-DB-backup --delete-empty-src-dirs -v
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
