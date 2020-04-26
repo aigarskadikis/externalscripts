@@ -37,6 +37,9 @@ echo content of $dest
 ls -lh $dest
 fi
 
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.size -o \
+$(ls -s --block-size=1 $dest/db.schema.zabbix.sql.xz | grep -Eo "^[0-9]+")
+
 sleep 1
 echo backuping pure configuration
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
