@@ -71,6 +71,7 @@ $grafana/var/lib/grafana \
 /root/bin \
 /usr/bin/zabbix_trap_receiver.pl \
 /usr/lib/zabbix \
+/usr/local/sbin \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/.config/rclone/rclone.conf \
 /var/lib/pgsql/.pgpass > /dev/null

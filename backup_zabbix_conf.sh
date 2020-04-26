@@ -92,7 +92,6 @@ $grafana/var/lib/grafana \
 /etc/letsencrypt \
 /etc/nginx/conf.d \
 /etc/nginx/nginx.conf \
-/etc/odbc.ini \
 /etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
 /etc/security/limits.conf \
@@ -100,7 +99,6 @@ $grafana/var/lib/grafana \
 /etc/snmp/snmptrapd.conf \
 /etc/sudoers.d \
 /etc/sysconfig/zabbix-agent \
-/etc/sysconfig/zabbix-server \
 /etc/sysctl.conf \
 /etc/systemd/system/nginx.service.d \
 /etc/systemd/system/php-fpm.service.d \
