@@ -6,11 +6,6 @@
 # zabbix server or zabbix proxy for zabbix sender
 contact=127.0.0.1
 
-# initialize startup message. 1 - backup is started
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
-
-sleep 1
-
 year=$(date +%Y)
 month=$(date +%m)
 day=$(date +%d)
@@ -21,29 +16,29 @@ if [ ! -d "$dest" ]; then
 fi
 
 echo backuping schema
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
 mysqldump \
 --flush-logs \
 --single-transaction \
 --create-options \
 --no-data \
-zabbix | xz > $dest/db.schema.zabbix.sql.xz
+zabbix | xz > $dest/schema.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
 echo "mysqldump executed with error !!"
 else
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 0
 echo content of $dest
 ls -lh $dest
 fi
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.size -o \
-$(ls -s --block-size=1 $dest/db.schema.zabbix.sql.xz | grep -Eo "^[0-9]+")
+$(ls -s --block-size=1 $dest/schema.sql.xz | grep -Eo "^[0-9]+")
 
 sleep 1
 echo backuping pure configuration
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
-
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -69,10 +64,10 @@ mysqldump \
 zabbix | xz > $dest/db.conf.zabbix.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
 echo "mysqldump executed with error !!"
 else
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 0
 echo content of $dest
 ls -lh $dest
 fi
@@ -85,7 +80,7 @@ grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 sleep 1
 echo archiving important directories and files
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o 1
 
 # sudo tar -zcvf $dest/fs.conf.zabbix.tar.gz \
 sudo tar -cJf $dest/fs.conf.zabbix.tar.xz \
@@ -122,11 +117,11 @@ $grafana/var/lib/grafana \
 /var/lib/pgsql/.config/rclone/rclone.conf \
 /var/lib/pgsql/.pgpass
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o $?
 
 echo uploading files to google drive
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 5
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
 rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup zabbixbackup:zabbix-DB-backup
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
 
