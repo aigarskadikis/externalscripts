@@ -33,8 +33,7 @@ echo content of $dest
 ls -lh $dest
 fi
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.size -o \
-$(ls -s --block-size=1 $dest/schema.sql.xz | grep -Eo "^[0-9]+")
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.size -o $(ls -s --block-size=1 $dest/schema.sql.xz | grep -Eo "^[0-9]+")
 
 sleep 1
 echo backuping pure configuration
@@ -61,7 +60,7 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | xz > $dest/db.conf.zabbix.sql.xz
+zabbix | xz > $dest/data.sql.xz
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
@@ -71,6 +70,8 @@ else
 echo content of $dest
 ls -lh $dest
 fi
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.size -o $(ls -s --block-size=1 $dest/data.sql.xz | grep -Eo "^[0-9]+")
 
 echo list installed packages
 yum list installed > $dest/yum.list.installed.log
@@ -118,6 +119,8 @@ $grafana/var/lib/grafana \
 /var/lib/pgsql/.pgpass
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o $?
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.size -o $(ls -s --block-size=1 $dest/fs.conf.zabbix.tar.xz | grep -Eo "^[0-9]+")
 
 echo uploading files to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
