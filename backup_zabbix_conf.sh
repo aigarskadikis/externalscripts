@@ -101,7 +101,7 @@ $grafana/var/lib/grafana \
 /etc/sysctl.conf \
 /etc/systemd/system/nginx.service.d \
 /etc/systemd/system/php-fpm.service.d \
-/etc/systemd/system/zabbix-agent.service.d \
+/etc/systemd/system/zabbix-agent2.service.d \
 /etc/systemd/system/zabbix-server.service.d \
 /etc/yum.repos.d \
 /etc/zabbix \
