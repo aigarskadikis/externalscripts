@@ -22,5 +22,5 @@ echo "$db"
 pg_dump --host=pg $db | gzip --best > $dest/$db.sql.gz
 } done
 
-rclone --delete-empty-src-dirs -vv move ~/10/backups ZabbixBackupPostgreSQL:ZabbixBackupPostgreSQL
+rclone --delete-empty-src-dirs -vv move ~/10/backups BackupPostgreSQL:ZabbixBackupPostgreSQL
 #

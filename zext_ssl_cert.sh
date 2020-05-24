@@ -36,9 +36,9 @@ fi
 case $f in
 -d)
 end_date=`openssl s_client -servername $servername -host $host -port $port -showcerts $starttls -prexit </dev/null 2>/dev/null |
-          /usr/bin/sed -n '/BEGIN CERTIFICATE/,/END CERT/p' |
+          sed -n '/BEGIN CERTIFICATE/,/END CERT/p' |
           openssl x509 -text 2>/dev/null |
-          /usr/bin/sed -n 's/ *Not After : *//p'`
+          sed -n 's/ *Not After : *//p'`
 
 if [ -n "$end_date" ]
 then
@@ -50,13 +50,13 @@ fi
 
 -i)
 issue_dn=`openssl s_client -servername $servername -host $host -port $port -showcerts $starttls -prexit </dev/null 2>/dev/null |
-          /usr/bin/sed -n '/BEGIN CERTIFICATE/,/END CERT/p' |
+          sed -n '/BEGIN CERTIFICATE/,/END CERT/p' |
           openssl x509 -text 2>/dev/null |
-          /usr/bin/sed -n 's/ *Issuer: *//p'`
+          sed -n 's/ *Issuer: *//p'`
 
 if [ -n "$issue_dn" ]
 then
-    issuer=`echo $issue_dn | /usr/bin/sed -n 's/.*CN=*//p'`
+    issuer=`echo $issue_dn | sed -n 's/.*CN=*//p'`
     echo $issuer
 fi
 ;;
