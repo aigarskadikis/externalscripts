@@ -90,6 +90,7 @@ $grafana/var/lib/grafana \
 /etc/cron.d \
 /etc/letsencrypt \
 /etc/nginx/conf.d \
+/etc/opt/rh/rh-nginx116/nginx/conf.d \
 /etc/nginx/nginx.conf \
 /etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
@@ -124,7 +125,7 @@ $grafana/var/lib/grafana \
 
 echo uploading files to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
-rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup zabbixbackup:zabbix-DB-backup
+rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup BackupMySQL:zabbix-DB-backup
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
 

@@ -75,10 +75,11 @@ $grafana/var/lib/grafana \
 /etc/snmp/snmptrapd.conf \
 /etc/sudoers.d \
 /etc/sysconfig/zabbix-agent \
+/etc/sysconfig/zabbix-agent2 \
 /etc/sysctl.conf \
 /etc/systemd/system/nginx.service.d \
 /etc/systemd/system/php-fpm.service.d \
-/etc/systemd/system/zabbix-agent.service.d \
+/etc/systemd/system/zabbix-agent2.service.d \
 /etc/systemd/system/zabbix-server.service.d \
 /etc/yum.repos.d \
 /etc/zabbix \
@@ -102,5 +103,5 @@ $grafana/var/lib/grafana \
 
 echo uploading files to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
-rclone move ~/zabbix_backup zabbixbackup:zabbix-DB-backup --delete-empty-src-dirs -v
+rclone move ~/zabbix_backup BackupMySQL:zabbix-DB-backup --delete-empty-src-dirs -v
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
