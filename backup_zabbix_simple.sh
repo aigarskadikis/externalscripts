@@ -9,7 +9,7 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-# backup schema
+echo backuping schema
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -18,7 +18,7 @@ mysqldump \
 --no-data \
 zabbix | gzip --best > $dest/schema.sql.$day.$clock.gz
 
-# backuping pure configuration without historical data
+echo backuping pure configuration without historical data
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -57,7 +57,6 @@ sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
 /root/.my.cnf \
 /etc/my.cnf.d \
 /usr/lib/zabbix
-$(grep zabbix /etc/passwd|cut -d: -f6)
  
 # remove old backups
 if [ -d "$dest" ]; then
