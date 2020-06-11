@@ -50,13 +50,14 @@ sudo tar -zcf $dest/$day.$clock.filesystem.tar.gz \
 /etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
 /etc/opt/rh/rh-nginx116/nginx/conf.d \
-/etc/security/limits.conf \
 /etc/selinux/config \
 /etc/systemd/system/mysqld.service.d \
 /etc/yum.repos.d \
 /root/.my.cnf \
 /etc/my.cnf.d \
-/usr/lib/zabbix
+/etc/zabbix \
+/usr/lib/zabbix \
+/usr/bin/zabbix_partitioning.py
  
 # remove old backups
 if [ -d "$dest" ]; then
