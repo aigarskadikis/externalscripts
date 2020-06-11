@@ -11,6 +11,7 @@ fi
 
 # backup schema
 mysqldump \
+--set-gtid-purged=OFF \
 --flush-logs \
 --single-transaction \
 --create-options \
@@ -19,6 +20,7 @@ zabbix | gzip --best > $dest/schema.sql.$day.$clock.gz
 
 # backuping pure configuration without historical data
 mysqldump \
+--set-gtid-purged=OFF \
 --flush-logs \
 --single-transaction \
 --create-options \
@@ -43,14 +45,18 @@ zabbix | gzip --best > $dest/data.$day.$clock.gz
  
 # backup important directories and files. last line search what is home directory for user 'zabbix'
 sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
-/etc/zabbix \
-/usr/lib/zabbix \
-/etc/php-fpm.d \
-/etc/nginx \
-/etc/httpd \
-/etc/my.cnf.d \
+/etc/cron.d \
+/etc/odbc.ini \
+/etc/odbcinst.ini \
+/etc/openldap/ldap.conf \
+/etc/opt/rh/rh-nginx116/nginx/conf.d \
+/etc/security/limits.conf \
+/etc/selinux/config \
+/etc/systemd/system/mysqld.service.d \
 /etc/yum.repos.d \
-/usr/share/snmp/mibs \
+/root/.my.cnf \
+/etc/my.cnf.d \
+/usr/lib/zabbix
 $(grep zabbix /etc/passwd|cut -d: -f6)
  
 # remove old backups
