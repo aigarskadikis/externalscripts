@@ -9,7 +9,7 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-echo backuping schema
+echo schema
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -18,7 +18,7 @@ mysqldump \
 --no-data \
 zabbix | gzip --best > $dest/$day.$clock.schema.sql.gz
 
-echo backuping pure configuration without historical data
+echo configuration
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -43,8 +43,8 @@ mysqldump \
 --ignore-table=zabbix.event_recovery \
 zabbix | gzip --best > $dest/$day.$clock.data.sql.gz
  
-echo backup important directories and files
-sudo tar -zcvf $dest/$day.$clock.filesystem.tar.gz \
+echo filesystem
+sudo tar -zcf $dest/$day.$clock.filesystem.tar.gz \
 /etc/cron.d \
 /etc/odbc.ini \
 /etc/odbcinst.ini \
