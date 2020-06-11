@@ -16,7 +16,7 @@ mysqldump \
 --single-transaction \
 --create-options \
 --no-data \
-zabbix | gzip --best > $dest/schema.sql.$day.$clock.gz
+zabbix | gzip --best > $dest/$day.$clock.schema.sql.gz
 
 echo backuping pure configuration without historical data
 mysqldump \
@@ -41,10 +41,10 @@ mysqldump \
 --ignore-table=zabbix.sessions \
 --ignore-table=zabbix.problem \
 --ignore-table=zabbix.event_recovery \
-zabbix | gzip --best > $dest/data.$day.$clock.gz
+zabbix | gzip --best > $dest/$day.$clock.data.sql.gz
  
-# backup important directories and files. last line search what is home directory for user 'zabbix'
-sudo tar -zcvf $dest/fs.conf.zabbix.$day.$clock.tar.gz \
+echo backup important directories and files
+sudo tar -zcvf $dest/$day.$clock.filesystem.tar.gz \
 /etc/cron.d \
 /etc/odbc.ini \
 /etc/odbcinst.ini \
