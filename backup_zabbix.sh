@@ -50,6 +50,7 @@ sudo tar -zcf $dest/$day.$clock.filesystem.tar.gz \
 /etc/odbcinst.ini \
 /etc/openldap/ldap.conf \
 /etc/opt/rh/rh-nginx116/nginx/conf.d \
+/etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf \
 /etc/selinux/config \
 /etc/systemd/system/mysqld.service.d \
 /etc/yum.repos.d \
