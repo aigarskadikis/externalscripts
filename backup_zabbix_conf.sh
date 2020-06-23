@@ -113,7 +113,7 @@ $grafana/var/lib/grafana \
 /root/.ssh \
 /root/.vimrc \
 /root/bin \
-/usr/bin/zabbix_trap_receiver.pl \
+/usr/bin/zabbix_* \
 /usr/lib/zabbix \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/.config/rclone/rclone.conf \

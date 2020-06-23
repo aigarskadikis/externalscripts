@@ -14,7 +14,7 @@ if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-databases2backup=$(psql --host=pg --list -t | awk '{print $1}' | grep -o -E "^[0-9a-zA-Z_-]+" | grep -v "template.*")
+databases2backup=$(psql --list -t | awk '{print $1}' | grep -o -E "^[0-9a-zA-Z_-]+" | grep -v "template.*")
 
 echo "$databases2backup" | while IFS= read -r db
 do {
