@@ -117,7 +117,8 @@ $grafana/var/lib/grafana \
 /usr/lib/zabbix \
 /usr/share/snmp/mibs \
 /var/lib/pgsql/.config/rclone/rclone.conf \
-/var/lib/pgsql/.pgpass
+/var/lib/pgsql/.pgpass \
+/etc/profile.d/postgres.sh
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o $?
 

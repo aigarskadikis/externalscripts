@@ -8,7 +8,7 @@
 
 day=$(date +%Y%m%d)
 clock=$(date +%H%M)
-dest=~/10/backups/$day/$clock
+dest=/home/BackupPostgreSQL/$day/$clock
 
 if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
@@ -19,8 +19,7 @@ databases2backup=$(psql --list -t | awk '{print $1}' | grep -o -E "^[0-9a-zA-Z_-
 echo "$databases2backup" | while IFS= read -r db
 do {
 echo "$db"
-pg_dump --host=pg $db | gzip --best > $dest/$db.sql.gz
+pg_dump $db | gzip --best > $dest/$db.sql.gz
 } done
 
-rclone --delete-empty-src-dirs -vv move ~/10/backups BackupPostgreSQL:ZabbixBackupPostgreSQL
-#
+rclone -vv sync $dest BackupPostgreSQL:ZabbixBackupPostgreSQL
