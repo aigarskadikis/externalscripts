@@ -1,5 +1,6 @@
 #!/bin/bash
-destination=/home/mysql
+destination=/backup/zabbix/mysql/raw
+mkdir -p $destination
 yesterday=$(date -d "1 DAY AGO" "+%Y-%m-%d")
 today=$(date -d "0 DAY AGO" "+%Y-%m-%d")
 echo "
