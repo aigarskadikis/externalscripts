@@ -1,7 +1,9 @@
+/etc/hosts
 /etc/ld.so.conf.d/oracle-instantclient.conf
 /etc/odbc.ini
 /etc/odbcinst.ini
 /etc/openldap/ldap.conf
+/etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf
 /etc/profile.d/postgres.sh
 /etc/security/limits.conf
 /etc/selinux/config
