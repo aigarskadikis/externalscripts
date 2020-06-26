@@ -1,34 +1,45 @@
 #!/bin/bash
- 
-# this script is suposed to run with root with ~/.my.cnf installed which allows passwordless use of mysqldump
- 
-day=$(date +%Y%m%d)
+
+# zabbix server or zabbix proxy for zabbix sender
+contact=127.0.0.1
+
+year=$(date +%Y)
+month=$(date +%m)
+day=$(date +%d)
 clock=$(date +%H%M)
-dest=/home/zabbix_backup
+dest=~/zabbix_backup/$year/$month/$day/$clock
 if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-echo schema
+echo backuping schema
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
 mysqldump \
---set-gtid-purged=OFF \
 --flush-logs \
 --single-transaction \
 --create-options \
 --no-data \
-zabbix | gzip --best > $dest/$day.$clock.schema.sql.gz
+zabbix | xz > $dest/schema.sql.xz
 
-echo configuration
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
+echo "mysqldump executed with error !!"
+else
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 0
+echo content of $dest
+ls -lh $dest
+fi
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.size -o $(ls -s --block-size=1 $dest/schema.sql.xz | grep -Eo "^[0-9]+")
+
+sleep 1
+echo backup all except raw metrics. those can be restored later
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
 --single-transaction \
---create-options \
---ignore-table=zabbix.acknowledges \
---ignore-table=zabbix.alerts \
---ignore-table=zabbix.auditlog \
---ignore-table=zabbix.auditlog_details \
---ignore-table=zabbix.events \
+--no-create-info \
 --ignore-table=zabbix.history \
 --ignore-table=zabbix.history_log \
 --ignore-table=zabbix.history_str \
@@ -36,32 +47,42 @@ mysqldump \
 --ignore-table=zabbix.history_uint \
 --ignore-table=zabbix.trends \
 --ignore-table=zabbix.trends_uint \
---ignore-table=zabbix.profiles \
---ignore-table=zabbix.service_alarms \
---ignore-table=zabbix.sessions \
---ignore-table=zabbix.problem \
---ignore-table=zabbix.event_recovery \
-zabbix | gzip --best > $dest/$day.$clock.data.sql.gz
- 
-echo filesystem
-sudo tar -zcf $dest/$day.$clock.filesystem.tar.gz \
-/etc/cron.d \
-/etc/odbc.ini \
-/etc/odbcinst.ini \
-/etc/openldap/ldap.conf \
-/etc/opt/rh/rh-nginx116/nginx/conf.d \
-/etc/opt/rh/rh-php72/php-fpm.d/zabbix.conf \
-/etc/selinux/config \
-/etc/systemd/system/mysqld.service.d \
-/etc/yum.repos.d \
-/root/.my.cnf \
-/etc/my.cnf.d \
-/etc/zabbix \
-/usr/lib/zabbix \
-/usr/bin/zabbix_partitioning.py
- 
-# remove old backups
-if [ -d "$dest" ]; then
-  find $dest -type f -name '*.gz' -mtime +30 -exec rm {} \;
+zabbix | xz > $dest/data.sql.xz
+
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
+echo "mysqldump executed with error !!"
+else
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 0
+echo content of $dest
+ls -lh $dest
 fi
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.size -o $(ls -s --block-size=1 $dest/data.sql.xz | grep -Eo "^[0-9]+")
+
+echo list installed packages
+yum list installed > $dest/yum.list.installed.log
+
+# grafana container dir
+grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
+
+sleep 1
+echo archiving important directories and files
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o 1
+
+sudo tar -cJf $dest/fs.conf.zabbix.tar.xz \
+--files-from "${0%/*}/backup_zabbix_files.list" \
+--files-from "${0%/*}/backup_zabbix_directories.list" \
+$(grep zabbix /etc/passwd|cut -d: -f6) \
+$grafana/var/lib/grafana 
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o $?
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.size -o $(ls -s --block-size=1 $dest/fs.conf.zabbix.tar.xz | grep -Eo "^[0-9]+")
+
+echo uploading files to google drive
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
+rclone  --delete-empty-src-dirs -vv move ~/zabbix_backup BackupMySQL:zabbix-DB-backup
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
 
