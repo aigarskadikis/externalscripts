@@ -1,25 +1,17 @@
 #!/bin/bash
 
-# cat /var/lib/pgsql/.pgpass
-# pg:5432:*:postgres:zabbix
-# pg:5432:*:zabbix:zabbix
-
-# usermod -a -G zabbix postgres
-
-day=$(date +%Y%m%d)
+year=$(date +%Y)
+day=$(date +%m%d)
 clock=$(date +%H%M)
-dest=/home/postgres/$day/$clock
+volume=/backup/zabbix
+dest=$volume/postgres/$year/$day/$clock
 
 if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
 fi
 
-databases2backup=$(psql --list -t | awk '{print $1}' | grep -o -E "^[0-9a-zA-Z_-]+" | grep -v "template.*")
+for db in $(
+PGPASSWORD=zabbix PGUSER=postgres psql -h 10.133.112.87 -t -A -c "SELECT datname FROM pg_database where datname not in ('template0','template1','postgres','dummy_db')"
+) ; do echo $db; PGPASSWORD=zabbix PGUSER=postgres pg_dump -h 10.133.112.87 $db | gzip --best > $dest/$db.sql.gz ; done
 
-echo "$databases2backup" | while IFS= read -r db
-do {
-echo "$db"
-pg_dump $db | gzip --best > $dest/$db.sql.gz
-} done
-
-#rclone -vv sync $dest BackupPostgreSQL:ZabbixBackupPostgreSQL
+rclone -vv sync $volume BackupPostgreSQL:ZabbixBackupPostgreSQL
