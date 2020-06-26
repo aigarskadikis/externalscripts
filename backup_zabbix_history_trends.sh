@@ -1,5 +1,5 @@
 #!/bin/bash
-destination=/home/BackupMySQL
+destination=/home/mysql
 yesterday=$(date -d "1 DAY AGO" "+%Y-%m-%d")
 today=$(date -d "0 DAY AGO" "+%Y-%m-%d")
 echo "

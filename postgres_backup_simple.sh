@@ -8,7 +8,7 @@
 
 day=$(date +%Y%m%d)
 clock=$(date +%H%M)
-dest=/home/BackupPostgreSQL/$day/$clock
+dest=/home/postgres/$day/$clock
 
 if [ ! -d "$dest" ]; then
   mkdir -p "$dest"
@@ -22,4 +22,4 @@ echo "$db"
 pg_dump $db | gzip --best > $dest/$db.sql.gz
 } done
 
-rclone -vv sync $dest BackupPostgreSQL:ZabbixBackupPostgreSQL
+#rclone -vv sync $dest BackupPostgreSQL:ZabbixBackupPostgreSQL
