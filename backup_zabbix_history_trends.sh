@@ -24,7 +24,8 @@ zabbix $table --where=" \
 clock >= UNIX_TIMESTAMP(\"$yesterday 00:00:00\") \
 AND \
 clock < UNIX_TIMESTAMP(\"$today 00:00:00\") \
-" | xz > $destination/$table.sql.xz && \
+" > $destination/$table.sql && \
+xz $destination/$table.sql && \
 mv $destination/$table.sql.xz $destination/$table.sql.xz.$yesterday
 fi
 } done
