@@ -15,6 +15,7 @@ trends_uint
 grep -v "^$" | \
 while IFS= read -r table; do {
 echo $table
+old=$(echo $table|sed "s|$|_old|")
 if [ ! -f "$destination/$table.sql.xz.$yesterday" ]; then
 mysqldump \
 --flush-logs \
@@ -24,7 +25,7 @@ zabbix $table --where=" \
 clock >= UNIX_TIMESTAMP(\"$yesterday 00:00:00\") \
 AND \
 clock < UNIX_TIMESTAMP(\"$today 00:00:00\") \
-" > $destination/$table.sql && \
+" | sed "s|$table|$old|" > $destination/$table.sql && \
 xz $destination/$table.sql && \
 mv $destination/$table.sql.xz $destination/$table.sql.xz.$yesterday
 fi
