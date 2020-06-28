@@ -7,8 +7,8 @@ year=$(date +%Y)
 month=$(date +%m)
 day=$(date +%d)
 clock=$(date +%H%M)
-volume=/backup/zabbix
-mysql=$volume/mysql/$year/$month/$day/$clock
+volume=/backup
+mysql=$volume/mysql/zabbix/$year/$month/$day/$clock
 filesystem=$volume/filesystem/$year/$month/$day/$clock
 if [ ! -d "$mysql" ]; then
   mkdir -p "$mysql"
@@ -18,6 +18,26 @@ if [ ! -d "$filesystem" ]; then
   mkdir -p "$filesystem"
 fi
 
+echo itemid do not exist anymore for an INTERNAL event
+mysql zabbix -e "
+DELETE 
+FROM events
+WHERE events.source = 3 
+  AND events.object = 4 
+  AND events.objectid NOT IN (
+    SELECT itemid FROM items)
+"
+
+echo Event by a triggerid which does not exist in configuration
+mysql zabbix -e "
+DELETE
+FROM events
+WHERE source = 0
+  AND object = 0
+  AND objectid NOT IN
+    (SELECT triggerid FROM triggers)
+"
+
 echo backuping schema
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
 mysqldump \
@@ -25,7 +45,8 @@ mysqldump \
 --single-transaction \
 --create-options \
 --no-data \
-zabbix | xz > $mysql/schema.sql.xz
+zabbix > $mysql/schema.sql && \
+xz $mysql/schema.sql
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
@@ -53,7 +74,8 @@ mysqldump \
 --ignore-table=zabbix.history_uint \
 --ignore-table=zabbix.trends \
 --ignore-table=zabbix.trends_uint \
-zabbix | xz > $mysql/data.sql.xz
+zabbix > $mysql/data.sql && \
+xz $mysql/data.sql
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
@@ -84,9 +106,15 @@ $grafana/var/lib/grafana
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.size -o $(ls -s --block-size=1 $filesystem/fs.conf.zabbix.tar.xz | grep -Eo "^[0-9]+")
 
-echo uploading files to google drive
+echo uploading sql backup to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
-rclone -vv sync $volume BackupMySQL:zabbix-DB-backup
+rclone -vv sync $volume BackupMySQL:mysql
+
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
+
+echo uploading filesystem backup to google drive
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
+rclone -vv sync $volume BackupFileSystem:filesystem
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
 
