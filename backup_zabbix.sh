@@ -108,13 +108,13 @@ $grafana/var/lib/grafana
 
 echo uploading sql backup to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
-rclone -vv sync $volume BackupMySQL:mysql
+rclone -vv sync $volume/mysql BackupMySQL:mysql
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
 
 echo uploading filesystem backup to google drive
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
-rclone -vv sync $volume BackupFileSystem:filesystem
+rclone -vv sync $volume/filesystem BackupFileSystem:filesystem
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
 
