@@ -16,7 +16,7 @@ grep -v "^$" | \
 while IFS= read -r table; do {
 echo $table
 old=$(echo $table|sed "s|$|_old|")
-if [ ! -f "$destination/$old.sql.xz.$yesterday" ]; then
+if [ ! -f "$destination/$old.sql.gz.$yesterday" ]; then
 mysqldump \
 --flush-logs \
 --single-transaction \
@@ -26,7 +26,7 @@ clock >= UNIX_TIMESTAMP(\"$yesterday 00:00:00\") \
 AND \
 clock < UNIX_TIMESTAMP(\"$today 00:00:00\") \
 " | sed "s|$table|$old|" > $destination/$old.sql && \
-xz $destination/$old.sql && \
-mv $destination/$old.sql.xz $destination/$old.sql.xz.$yesterday
+gzip --best $destination/$old.sql && \
+mv $destination/$old.sql.gz $destination/$old.sql.gz.$yesterday
 fi
 } done
