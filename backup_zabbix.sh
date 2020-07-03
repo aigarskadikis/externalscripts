@@ -57,8 +57,6 @@ echo content of $mysql
 ls -lh $mysql
 fi
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.size -o $(ls -s --block-size=1 $mysql/schema.sql.xz | grep -Eo "^[0-9]+")
-
 sleep 1
 echo backup all except raw metrics. those can be restored later
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
@@ -86,7 +84,7 @@ echo content of $mysql
 ls -lh $mysql
 fi
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.size -o $(ls -s --block-size=1 $mysql/data.sql.xz | grep -Eo "^[0-9]+")
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.data.size -o $(ls -s --block-size=1 $mysql/data.sql.xz | grep -Eo "^[0-9]+")
 
 # grafana container dir
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
