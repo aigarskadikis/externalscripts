@@ -18,7 +18,7 @@ if [ ! -d "$filesystem" ]; then
   mkdir -p "$filesystem"
 fi
 
-echo Delete itemid which do not exist anymore for an INTERNAL event
+echo -e "\nDelete itemid which do not exist anymore for an INTERNAL event"
 mysql zabbix -e "
 DELETE 
 FROM events
@@ -28,7 +28,7 @@ WHERE events.source = 3
     SELECT itemid FROM items)
 "
 
-echo Delete trigger event where triggerid do not exist anymore
+echo -e "\nDelete trigger event where triggerid do not exist anymore"
 mysql zabbix -e "
 DELETE
 FROM events
@@ -38,7 +38,7 @@ WHERE source = 0
     (SELECT triggerid FROM triggers)
 "
 
-echo backuping schema
+echo -e "\nExtracting schema"
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 mysqldump \
 --flush-logs \
@@ -58,7 +58,7 @@ ls -lh $mysql
 fi
 
 sleep 1
-echo backup all except raw metrics. those can be restored later
+echo -e "\nData backup except raw metrics"
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
 mysqldump \
 --set-gtid-purged=OFF \
@@ -90,7 +90,7 @@ fi
 grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 sleep 1
-echo archiving important directories and files
+echo -e "\nArchiving important directories and files"
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 3
 
 sudo tar -cJf $filesystem/fs.conf.zabbix.tar.xz \
@@ -104,13 +104,13 @@ $grafana/var/lib/grafana
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.size -o $(ls -s --block-size=1 $filesystem/fs.conf.zabbix.tar.xz | grep -Eo "^[0-9]+")
 
-echo uploading sql backup to google drive
+echo -e "\nUploading sql backup to google drive"
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
 rclone -vv sync $volume/mysql BackupMySQL:mysql
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
 
-echo uploading filesystem backup to google drive
+echo -e "\nUploading filesystem backup to google drive"
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 5
 rclone -vv sync $volume/filesystem BackupFileSystem:filesystem
 
