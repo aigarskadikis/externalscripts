@@ -18,7 +18,7 @@ if [ ! -d "$filesystem" ]; then
   mkdir -p "$filesystem"
 fi
 
-echo itemid do not exist anymore for an INTERNAL event
+echo Delete itemid which do not exist anymore for an INTERNAL event
 mysql zabbix -e "
 DELETE 
 FROM events
@@ -28,7 +28,7 @@ WHERE events.source = 3
     SELECT itemid FROM items)
 "
 
-echo Event by a triggerid which does not exist in configuration
+echo Delete trigger event where triggerid do not exist anymore
 mysql zabbix -e "
 DELETE
 FROM events
@@ -39,7 +39,7 @@ WHERE source = 0
 "
 
 echo backuping schema
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 mysqldump \
 --flush-logs \
 --single-transaction \
@@ -49,10 +49,10 @@ zabbix > $mysql/schema.sql && \
 xz $mysql/schema.sql
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 1
 echo "mysqldump executed with error !!"
 else
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.schema.status -o 0
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
 echo content of $mysql
 ls -lh $mysql
 fi
@@ -61,7 +61,7 @@ fi
 
 sleep 1
 echo backup all except raw metrics. those can be restored later
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
 mysqldump \
 --set-gtid-purged=OFF \
 --flush-logs \
@@ -78,10 +78,10 @@ zabbix > $mysql/data.sql && \
 xz $mysql/data.sql
 
 if [ ${PIPESTATUS[0]} -ne 0 ]; then
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 2
 echo "mysqldump executed with error !!"
 else
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.sql.conf.data.status -o 0
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 0
 echo content of $mysql
 ls -lh $mysql
 fi
@@ -93,7 +93,7 @@ grafana=$(sudo docker inspect grafana | jq -r ".[].GraphDriver.Data.UpperDir")
 
 sleep 1
 echo archiving important directories and files
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 3
 
 sudo tar -cJf $filesystem/fs.conf.zabbix.tar.xz \
 --files-from "${0%/*}/backup_zabbix_files.list" \
@@ -102,19 +102,19 @@ sudo tar -cJf $filesystem/fs.conf.zabbix.tar.xz \
 $(grep zabbix /etc/passwd|cut -d: -f6) \
 $grafana/var/lib/grafana 
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.status -o $?
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
 
 /usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.filesystem.size -o $(ls -s --block-size=1 $filesystem/fs.conf.zabbix.tar.xz | grep -Eo "^[0-9]+")
 
 echo uploading sql backup to google drive
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 4
 rclone -vv sync $volume/mysql BackupMySQL:mysql
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
 
 echo uploading filesystem backup to google drive
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o 1
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o 5
 rclone -vv sync $volume/filesystem BackupFileSystem:filesystem
 
-/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.upload.status -o $?
+/usr/bin/zabbix_sender --zabbix-server $contact --host $(hostname) -k backup.status -o $?
 
