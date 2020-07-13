@@ -1,7 +1,18 @@
 #!/bin/bash
+
+# select only hostid's where there are some problems
 psql z40 -t -c "
-SELECT hostid FROM hosts
+SELECT DISTINCT hosts.hostid
+FROM triggers
+JOIN functions ON (functions.triggerid=triggers.triggerid)
+JOIN items ON (items.itemid=functions.itemid)
+JOIN hosts ON (hosts.hostid=items.hostid)
+WHERE triggers.status=0
+AND triggers.value=1
 " | \
+# remove empty lines
+grep -v "^$" | \
+# list the biggest problem per this host
 while IFS= read -r hostid
 do {
 psql z40 -t -c "
@@ -26,6 +37,6 @@ WHERE problem.source=0
 AND events.source=0
 AND hosts.hostid=$hostid
 ORDER BY problem.severity DESC
-LIMIT 1;
+LIMIT 1
 "
 } done
