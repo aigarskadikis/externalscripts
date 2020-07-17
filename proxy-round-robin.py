@@ -15,6 +15,8 @@ transfer all hosts from one proxy to others
 from pyzabbix import ZabbixAPI, ZabbixAPIException
 
 # import credentials from external file
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 import sys
 sys.path.insert(0, '/var/lib/zabbix')
@@ -25,7 +27,7 @@ import config
 ZABBIX_SERVER = config.url
 
 zapi = ZabbixAPI(ZABBIX_SERVER)
-
+zapi.session.verify=False
 # Login to the Zabbix API
 
 zapi.login(config.username, config.password)

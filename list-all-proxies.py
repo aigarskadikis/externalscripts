@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 from pyzabbix import ZabbixAPI
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
