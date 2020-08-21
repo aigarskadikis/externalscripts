@@ -7,25 +7,26 @@ declare -a array
 #define endpoint for url for example if the ir is
 #https://catonrug.blogspot.com/feeds/posts/default/?atom.xml?redirect=false&start-index=1&max-results=50
 #then the endpoint is "multimedia"
-endpoint="https://catonrug.blogspot.com/feeds/posts/default/?atom.xml?redirect=false&max-results=50&start-index="
+endpoint="https://$1/feeds/posts/default/?atom.xml?redirect=false&max-results=50&start-index="
 
-arr=0
-count_of_elements=1
-nr=2751 #start check from page 0
-httpcode=200 #reset the status code as OK
+arr=0 # array position
+count_of_elements=1 # count the found posts
+nr=1 #start check from page 0
 
-#this while loop is only to count how many pages needs to analyse
+# while the atom.xml file contans at least 1 record, continue to gather data
 while [ "$count_of_elements" -ne "0" ]
 do
 
-#increase page number
+# analize next 50 posts
 nr=$((nr+50))
+
+# switch to next slot in array
 arr=$((arr+1))
 
 #set full url link
 #remove the forwardslash in the end of argument if exists
 url=$(echo "$endpoint$nr")
-#echo $url
+echo $url
 
 #check if url exist
 httpcode=$(curl -s -o /dev/null -w "%{http_code}" "$url")
