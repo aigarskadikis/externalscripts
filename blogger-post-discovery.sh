@@ -12,7 +12,7 @@ endpoint="https://$1/feeds/posts/default/?atom.xml?redirect=false&max-results=1&
 
 arr=0 # array position
 count_of_elements=1 # count the found posts
-nr=2808 # -49+50=1 which means to start from post 1
+nr=0 # -49+50=1 which means to start from post 1
 
 # while the atom.xml file contans at least 1 record, continue to gather data
 while [ "$count_of_elements" -ne "0" ]
