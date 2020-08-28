@@ -28,6 +28,7 @@ clock < UNIX_TIMESTAMP(\"$today 00:00:00\") \
 " | sed "s|$table|$old|" > $destination/$old.sql && \
 gzip --best $destination/$old.sql && \
 mv $destination/$old.sql.gz $destination/$old.sql.gz.$yesterday
+echo sleeping for 1m30s
 sleep 90
 fi
 } done
