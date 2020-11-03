@@ -22,5 +22,7 @@ import config
 ZABBIX_SERVER = config.url
 zapi = ZabbixAPI(ZABBIX_SERVER)
 zapi.session.verify=False
-zapi.login(config.username, config.password)
+output = zapi.login(config.username, config.password)
+
+print (ZABBIX_SERVER)
 

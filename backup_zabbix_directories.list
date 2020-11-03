@@ -9,3 +9,4 @@
 /root/.ssh
 /usr/lib/zabbix
 /usr/share/snmp/mibs
+/usr/share/zabbix-pdf-report
