@@ -1,6 +1,6 @@
 #!/usr/bin/perl
-#
-#
+# 
+# on CentOS 8: dnf install perl-DBI perl-DBD-MySQL
 #
 #
 #
