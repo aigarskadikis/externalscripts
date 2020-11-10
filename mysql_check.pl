@@ -312,6 +312,11 @@ sub generate_lld($) {
     
         $result .= "\t{\n";
 	$result .= "\t\t\"{#MYSQL_NAME}\":\"$name\",\n";
+
+#$list->{$name} =~ s/\//\\\//g;
+$list->{$name} =~ s/[\n\r]//g;
+#        $result .= "\t\t\"{#MYSQL_VALUE}\":\"abols\",\n";
+#        $result .= "\t\t\"{#MYSQL_VALUE}\":\"$vertiba\",\n";
         $result .= "\t\t\"{#MYSQL_VALUE}\":\"$list->{$name}\",\n";
 	$result .= "\t\t\"{#MYSQL_TYPE}\":\"numeric\"\n" if ($list->{$name} =~ /^\d+$/);
 	$result .= "\t\t\"{#MYSQL_TYPE}\":\"string\"\n" unless ($list->{$name} =~ /^\d+$/);
