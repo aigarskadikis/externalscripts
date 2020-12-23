@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.6
 
 import sys
 from datetime import datetime
@@ -8,26 +8,29 @@ from pyzabbix import ZabbixAPI
 import pprint
 import re
 
-# Zabbix Web Frontend page, you can define IP-address or use Domain Name:
-zapi = ZabbixAPI("http://127.0.0.1/zabbix")
-# Zabbix user credentials:
-zapi.login("Admin", "zabbix")
+sys.path.insert(0,'/var/lib/zabbix')
+import config
+ZABBIX_SERVER = config.url
+zapi = ZabbixAPI(ZABBIX_SERVER)
+zapi.login(config.username, config.password)
+
 
 # Get timestamps from 30 days back
 start_time = int(time.time()) - 300000
 
 # get tagged events
-tagged_events=zapi.event.get(time_from = start_time, tags=[{'tag': 'autoclose_alert', 'value': '1', 'operator': 0}], output = ['eventid'])
-for elem in tagged_events:
-  print elem['eventid']
-  events_closed = zapi.event.acknowledge(
-    eventids = elem['eventid'],
-    action = '1'
-    )
-  for events in events_closed:
-    print events[0]
+#r=zapi.event.get(time_from = start_time, tags=[{'tag': 'autoclose_alert', 'value': '1', 'operator': 0}], output = ['eventid'])
+r=zapi.problem.get(time_from = start_time, tags=[{'tag': 'autoclose_alert', 'value': '1', 'operator': 0}], output = ['eventid'])
 
+# print ray array
+print (r)
 
-print '\nEvent ID of the 1st Unacknowledged event with status=PROBLEM'
-print tagged_events
+event_ids = [e['eventid'] for e in r]
+
+print (event_ids)
+
+events_closed = zapi.event.acknowledge(eventids = event_ids, action = '1')
+
+print (events_closed)
+
 
