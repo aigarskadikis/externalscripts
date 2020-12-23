@@ -1,12 +1,8 @@
 #!/usr/bin/env python3.6
 
 import sys
-from datetime import datetime
 import time
-#import logging
 from pyzabbix import ZabbixAPI
-#import pprint
-#import re
 
 sys.path.insert(0,'/var/lib/zabbix')
 import config
@@ -34,5 +30,4 @@ events_closed = zapi.event.acknowledge(eventids = event_ids, action = '1')
 
 # print outcome
 print (events_closed)
-
 
